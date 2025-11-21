@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biyahe Now - Van Transportation Booking System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styles.css">
+
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo">
+            <a href="#home">
+                <img src="images/logo.png" alt="Biyahe Now Logo">
+            </a>
+        </div>
+
+        <!-- Logo Text -->
+        <div class="logo-text">
+            <span class="blue-text">BIYAHE</span> <span class="orange-text">NOW!</span>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <!-- Navigation -->
+        <nav id="nav">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#routes">Routes</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="cta-button" id="loginButton">Login</a></li>
+                <li class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="navSearch" placeholder="Search..." />
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+
+    <!-- Hero Section -->
+<!-- Hero Section with Booking Form -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h2>Skip the line, Book Online</h2>
+      <p>Convenient and affordable van transportation at your fingertips.</p>
+      <p>Choose your preferred route and schedule with ease.</p>
+      <p>Safe, reliable, and punctual services every day.</p>
+      <p>Book from anywhere, anytime, and avoid long lines.</p>
+    </div>
+
+    <!-- Booking Form (Button Only) -->
+            <button type="button" class="check-btn" id="formBookButton">
+              Check Availability & Book Now
+            </button>
+        </section>
+
+
+    <!-- Routes Section -->
+    <section id="routes" class="routes">
+        <div class="routes-container">
+            <div class="section-title">
+                <h2>Our Popular Routes</h2>
+                <p>Discover our most frequent routes with convenient schedules</p>
+            </div>
+            
+            <div class="routes-tabs">
+                <button class="route-tab active" data-route="naval">Naval</button>
+                <button class="route-tab" data-route="biliran">Biliran</button>
+                <button class="route-tab" data-route="caibiran">Caibiran</button>
+                <button class="route-tab" data-route="almeria">Almeria</button>
+                <button class="route-tab" data-route="cabucgayan">Cabucgayan</button>
+            </div>
+            
+            <!-- NAVAL Routes -->
+            <div class="routes-content active" id="naval-routes">
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Naval to Tacloban</h3>
+                        <div class="route-price">₱200 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 250 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 2-2.5 hours</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 1 hour, 4AM-5PM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Naval to Ormoc</h3>
+                        <div class="route-price">₱200 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 110 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 2 hours</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 45 mins, 5AM-5PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Naval to Lemon</h3>
+                        <div class="route-price">₱150 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 70 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 1.5 hours</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 1 hour, 6AM-6PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BILIRAN Routes -->
+            <div class="routes-content" id="biliran-routes">
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Biliran to Tacloban</h3>
+                        <div class="route-price">₱200 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 200 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 2-2.5 hours</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 1 hour, 4AM-5PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Biliran to Leyte</h3>
+                        <div class="route-price">₱120 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 45 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 30 minutes</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 45 mins, 5AM-5PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Biliran to Cabucgayan</h3>
+                        <div class="route-price">₱60 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 15 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 20 minutes</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 30 mins, 5AM-6PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CAIBIRAN Routes -->
+            <div class="routes-content" id="caibiran-routes">
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Caibiran to Naval</h3>
+                        <div class="route-price">₱100 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 50 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 1 hour</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 30 mins, 5AM-6PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ALMERIA Routes -->
+            <div class="routes-content" id="almeria-routes">
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Almeria to Naval</h3>
+                        <div class="route-price">₱50 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 10 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 15 mins</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 15 mins, 5AM-7PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CABUCGAYAN Routes -->
+            <div class="routes-content" id="cabucgayan-routes">
+                <div class="route-card">
+                    <div class="route-header">
+                        <h3 class="route-title">Cabucgayan to Naval</h3>
+                        <div class="route-price">₱80 per seat</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="route-detail">
+                            <i class="fas fa-road"></i>
+                            <div><strong>Distance:</strong> 20 km</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-clock"></i>
+                            <div><strong>Duration:</strong> 30 mins</div>
+                        </div>
+                        <div class="route-detail">
+                            <i class="fas fa-calendar"></i>
+                            <div><strong>Departure:</strong> Every 30 mins, 5AM-6PM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Map Section -->
+<section id="map-section" class="map-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Find Us Here</h2>
+      <p>Visit our main office or check out our route hub on the map below</p>
+    </div>
+
+    <!-- Google Map Embed -->
+    <div class="map-container" style="width: 100%; height: 450px; border-radius: 10px; overflow: hidden;">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500302.3759018663!2d124.1015245436799!3d11.579625862003075!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a78cb8bc103253%3A0x6b62ae5056ee8e5d!2sNaval%2C%20Biliran!5e0!3m2!1sen!2sph!4v1760603361384!5m2!1sen!2sph" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        width="100%"
+        height="100%"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="about-container">
+            <div class="section-title">
+                <h2>About Biyahe Now</h2>
+                <p>Your trusted partner for safe and reliable transportation</p>
+            </div>
+            
+            <div class="about-cards">
+                <!-- Logo -->
+                <div class="about-card" onclick="openLogoModal()" style="cursor: pointer;">
+                    <div class="about-icon">
+                        <i class="fas fa-shuttle-van"></i>
+                    </div>
+                    <h3 class="about-title">LOGO</h3>
+                </div>
+                
+                <!-- Poster -->
+                <div class="about-card" onclick="openPosterModal()" style="cursor: pointer;">
+                    <div class="about-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <h3 class="about-title">POSTER</h3>
+                </div>
+                
+                <!-- System Demo Video -->
+                <div class="about-card" onclick="openVideoModal()" style="cursor: pointer;">
+                    <div class="about-icon">
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                    <h3 class="about-title">SYSTEM DEMO</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+       <!-- 🔹 Modal Container -->
+<div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle" 
+     aria-hidden="false" id="authModal" style="display:none;">
+  <div class="auth-container" id="authContainer">
+
+    <!-- Floating close button -->
+    <button class="close-btn" id="closeModal" aria-label="Close modal" type="button">&times;</button>
+
+    <!-- Login Form -->
+    <div class="form-container login-container" aria-labelledby="loginTitle" role="form">
+      <h2 id="loginTitle">LOGIN</h2>
+      <div class="social-container">
+        <a href="javascript:void(0)" aria-label="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="javascript:void(0)" aria-label="Register with Google"><i class="fab fa-google-plus-g"></i></a>
+        <a href="javascript:void(0)" aria-label="Register with LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+        <span>All roads lead back to your account</span>
+      <form id="loginForm" action="Php/login_backend.php" method="POST">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" name="email" required />
+
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="password" required />
+      
+        <button type="submit" class="form-btn">Login</button>    
+    </form>
+    
+    <!-- Mobile Switch Button -->
+    <div class="mobile-switch">
+        <p>Don't have an account? <button type="button" id="mobileSignUp">Register here</button></p>
+    </div>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-container register-container" aria-labelledby="registerTitle" role="form">
+     <h2 id="registerTitle">CREATE ACCOUNT</h2>
+
+     <div class="social-container">
+        <a href="javascript:void(0)" aria-label="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="javascript:void(0)" aria-label="Register with Google"><i class="fab fa-google-plus-g"></i></a>
+        <a href="javascript:void(0)" aria-label="Register with LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+     </div>
+
+     <span>or register with email</span>
+
+  <!-- ✅ Start form -->
+     <form id="registerForm" action="Php/register_backend.php" method="POST">
+        <div class="name-group">
+            <div class="name-field">
+                <label for="lastnameRegister">Surname</label>
+                <input type="text" name="lastname" id="lastnameRegister" required>
+            </div>
+
+            <div class="name-field">
+                <label for="firstnameRegister">First Name</label>
+                <input type="text" name="firstname" id="firstnameRegister" required>
+            </div>
+        </div>
+
+        <label for="emailRegister">Email</label>
+        <input type="email" name="email" id="emailRegister" required>
+
+        <label for="passwordRegister">Password</label>
+        <input type="password" name="password" id="passwordRegister" required>
+
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" name="confirm_password" id="confirmPassword" required>
+
+
+        <!-- ✅ Add the alert container here -->
+        <div id="alertBox" class="alert-box" style="display:none;"></div>
+
+    <!-- ✅ Role selection should be INSIDE the form -->
+
+    <input type="hidden" name="role" id="roleInput" value="passenger">
+
+
+    <!-- ✅ Register button below roles -->
+        <button type="submit" class="form-btn">Register</button>
+      </form>
+      
+      <!-- Mobile Switch Button -->
+      <div class="mobile-switch">
+          <p>Already have an account? <button type="button" id="mobileSignIn">Login here</button></p>
+      </div>
+      </div>
+
+
+    <!-- Overlay -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-left">
+          <h2>Welcome Back!</h2>
+          <p>To keep connected, please login with your account</p>
+          <button class="ghost" id="signIn" type="button">LOGIN</button>
+        </div>
+        <div class="overlay-panel overlay-right">
+          <h2>Hello, Friend!</h2>
+          <p>Enter your personal details and start your journey with us</p>
+          <button class="ghost" id="signUp" type="button">REGISTER</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Biyahe Now?</h2>
+                <p>We provide the best van transportation service with these amazing features</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h3>24/7 Availability</h3>
+                    <p>Book a van anytime, day or night. We're always available to serve your transportation needs.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tag"></i>
+                    <h3>Affordable Prices</h3>
+                    <p>Competitive pricing with no hidden fees. Get the best value for your money with our service.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Safe & Reliable</h3>
+                    <p>Our drivers are experienced and our vehicles are regularly maintained for your safety.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+                <p>Booking a van with Biyahe Now is simple and straightforward</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Create an Account</h3>
+                    <p>Register with your email and personal details to get started</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Enter Your Details</h3>
+                    <p>Provide your pickup, destination, date, and time information</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Choose Your Van</h3>
+                    <p>Select from available vans that match your criteria</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Confirm Booking</h3>
+                    <p>Review your trip details and confirm your booking</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Biyahe Now</h3>
+                    <p>Biyahe Now provides convenient and reliable van transportation services across the region. Book your ride with us today!</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#routes">Routes & Schedules</a></li>
+                        <li><a href="#pricing">Fares & Payments</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Information</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Transportation St., Metro Manila</p>
+                    <p><i class="fas fa-phone"></i> +63 912 345 6789</p>
+                    <p><i class="fas fa-envelope"></i> info@biyahenow.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Biyahe Now Transportation Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- ✅ Success Popup -->
+<div id="successPopup" class="popup-overlay" style="display:none;">
+  <div class="popup-box">
+    <h2 id="popupTitle">Success!</h2>
+    <p id="popupMessage">Welcome to Biyahe Now!</p>
+  </div>
+</div>
+
+    <!-- Logo Modal -->
+    <div id="logoModal" class="about-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeLogoModal()">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img src="images/logo.png" alt="Biyahe Now Logo" style="width: 100%; max-width: 600px; height: auto;">
+                </div>
+                <div class="modal-description">
+                    <h3>Biyahe Now Brand Identity</h3>
+                    <p>The Biyahe Now logo represents our commitment to providing reliable, efficient, and modern transportation services throughout the region. Our brand identity reflects innovation, trust, and accessibility in public transportation.</p>
+                    <p><strong>Design Elements & Meaning:</strong></p>
+                    <ul>
+                        <li><strong>Blue Color:</strong> Represents trust, reliability, and professionalism in our services</li>
+                        <li><strong>Orange Accent:</strong> Symbolizes energy, enthusiasm, and the warmth of Filipino hospitality</li>
+                        <li><strong>Typography:</strong> Modern and clean font that ensures readability across all platforms</li>
+                        <li><strong>Van Symbol:</strong> Direct representation of our core transportation service</li>
+                    </ul>
+                    <p><strong>Brand Values:</strong></p>
+                    <p>Our logo embodies movement, connectivity, and progress - core values that drive our mission to revolutionize public transportation. It represents our dedication to bridging communities, connecting people to their destinations safely and efficiently, and embracing technology to enhance the travel experience for everyone.</p>
+                    <p>The design symbolizes our vision of a connected Philippines where transportation is accessible, reliable, and digitally integrated for the modern Filipino traveler.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Poster Modal -->
+    <div id="posterModal" class="about-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closePosterModal()">&times;</span>
+            <div class="modal-body poster-layout">
+                <div class="modal-image">
+                    <img src="images/poster.png" alt="Biyahe Now Poster" style="width: 100%; max-width: 500px; height: auto; object-fit: contain;">
+                </div>
+                <div class="modal-description">
+                    <h3>Biyahe Now System Poster</h3>
+                    <p>Our comprehensive promotional poster showcases the revolutionary features and benefits of the Biyahe Now transportation booking system. This visual representation highlights our commitment to modernizing public transportation through technology.</p>
+                    <p><strong>Key Features Highlighted:</strong></p>
+                    <ul>
+                        <li>User-friendly mobile and web interface for seamless booking</li>
+                        <li>Real-time GPS tracking and live updates for passengers</li>
+                        <li>Secure payment processing and digital ticketing system</li>
+                        <li>Route optimization and schedule management</li>
+                        <li>24/7 customer support and emergency assistance</li>
+                    </ul>
+                    <p>The poster demonstrates our vision of making travel booking simple, accessible, and reliable for everyone in the community. It represents our dedication to bridging the gap between traditional transportation and modern digital solutions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="about-modal" style="display: none;">
+        <div class="modal-content video-modal">
+            <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+            <div class="modal-body">
+                <video controls style="width: 100%; height: 70vh; max-width: 1200px;">
+                    <source src="images/biyahe Now!.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/scripts.js"></script>
+</body>
+</html>
+
+
+
+
+

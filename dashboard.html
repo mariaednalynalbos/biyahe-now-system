@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Driver Dashboard - Biyahe Now</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="styles/dashboard.css">
+  
+</head>
+<body class="antialiased flex">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <h2 class="text-3xl font-extrabold mb-8 text-highlight p-1">Biyahe<span class="text-white">Now</span></h2>
+    <ul class="space-y-2">
+      <li><a href="#" class="nav-item active" data-section="dashboard">Dashboard</a></li>
+      <li><a href="#" class="nav-item" data-section="schedule">My Schedule</a></li>
+      <li><a href="#" class="nav-item" data-section="earnings">Earnings</a></li>
+      <li><a href="#" class="nav-item" data-section="support">Support</a></li>
+      <li><a href="#" class="nav-item" id="navProfile">Profile</a></li>
+      <li><a href="#" class="nav-item text-red-400" id="nav-logout">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main -->
+  <main class="content flex-grow p-6 md:p-8">
+    <header class="topbar flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-3xl font-bold">Welcome, <span id="driverName" class="text-highlight">
+          <!-- PHP displayName placeholder -->
+          <?php echo isset($displayName) ? htmlspecialchars($displayName) : 'Driver'; ?>
+        </span>!</h1>
+        <p class="text-sm" style="color:var(--muted)">Your driving overview and live information.</p>
+      </div>
+
+      <div class="search-wrap relative">
+        <input id="search" type="search" placeholder="Search drivers or passengers..." class="bg-secondary text-text rounded-full py-2 px-6 pl-12 focus:ring-2 focus:ring-highlight outline-none transition w-64" autocomplete="off">
+        <i class="fas fa-search absolute left-4 top-3 text-text-muted"></i>
+        <div id="search-suggestions" class="absolute mt-1 w-full bg-card rounded-lg shadow-xl z-10 hidden"></div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="page-section active" id="dashboardSection">
+
+      <div class="flex justify-between items-center mb-6 p-4 card-bg rounded-xl">
+        <div class="flex items-center space-x-4">
+            <span class="text-lg font-semibold" style="color:var(--muted)">Status:</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="availabilityToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+            <span id="availabilityStatus" class="font-bold text-green-400">Available</span>
+        </div>
+        <div class="text-right">
+            <h3 class="text-sm" style="color:var(--muted); text-transform:uppercase; letter-spacing:1px">Current Trip</h3>
+            <p class="text-xl font-bold text-highlight" id="currentTripRoute">Naval → Tacloban</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- LEFT COLUMN -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Speed Gauge (kept visual) -->
+          <div class="card-bg p-6 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold mb-4">Current Driving Metrics</h3>
+            <div class="flex items-center space-x-4">
+              <div class="relative w-32 h-32 flex-shrink-0">
+                  <svg viewBox="0 0 160 160" class="w-full h-full">
+                      <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="15"></circle>
+                      <circle cx="80" cy="80" r="70" fill="none" stroke="var(--highlight)" stroke-width="15" id="speed-gauge-ring" stroke-dasharray="440" stroke-dashoffset="160"></circle>
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                      <span class="text-4xl font-extrabold" id="speed-value">0</span>
+                      <span class="text-xs" style="color:var(--muted)">KPH</span>
+                  </div>
+              </div>
+              <div class="flex flex-col space-y-2 flex-grow">
+                  <div class="flex justify-between items-center text-sm p-3 bg-secondary/20 rounded-lg">
+                      <span><i data-lucide="gauge" class="w-4 h-4 inline mr-2 text-green-400"></i>Fuel Econ</span>
+                      <span class="font-bold">--</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm p-3 bg-secondary/20 rounded-lg">
+                      <span><i data-lucide="battery-charging" class="w-4 h-4 inline mr-2 text-yellow-300"></i>Fatigue Score</span>
+                      <span class="font-bold">--</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm p-3 bg-secondary/20 rounded-lg">
+                      <span><i data-lucide="clock" class="w-4 h-4 inline mr-2 text-red-400"></i>Driving Time</span>
+                      <span class="font-bold">--</span>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WEATHER (replaces route progress) -->
+          <div class="card-bg p-6 rounded-xl shadow-xl" id="weatherCard">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold">Weather Forecast</h3>
+              <div class="flex items-center gap-2">
+                <input id="citySearch" placeholder="Search city" class="text-sm p-2 rounded bg-[#0f1724] border border-[#24303a]" />
+                <button id="citySearchBtn" class="text-sm px-3 py-1 rounded bg-[var(--highlight)]">Search</button>
+              </div>
+            </div>
+            <div id="weatherContent" class="grid grid-cols-1 gap-3">
+              <div id="currentWeather" class="flex items-center gap-4 p-3 bg-[#0f1724] rounded-lg">
+                <div id="currentIcon" style="font-size:42px;"></div>
+                <div>
+                  <div class="text-xl font-bold" id="currentTemp">--°C</div>
+                  <div style="color:var(--muted)" id="currentDesc">--</div>
+                  <div style="color:var(--muted)" id="currentLocation">--</div>
+                </div>
+                <div class="ml-auto text-sm" style="color:var(--muted)">
+                  <div>Wind: <span id="windVal">--</span></div>
+                  <div>Humidity: <span id="humVal">--</span></div>
+                </div>
+              </div>
+              <div id="forecastList" class="flex gap-3 overflow-x-auto"></div>
+            </div>
+            <p class="text-xs mt-3" style="color:var(--muted)">Weather data from OpenWeather. Enable location for auto-detect.</p>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="lg:col-span-2 space-y-6">
+
+          <!-- Map -->
+          <div class="card-bg p-4 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-5 h-5 text-red-400"></i>
+              Live Route & Navigation
+            </h3>
+            <div id="map" class="w-full h-80 rounded-lg overflow-hidden"></div>
+            <div class="flex items-center justify-between mt-3 gap-3">
+              <div class="flex gap-4 items-center">
+                <div>ETA: <span id="eta-value">--:--</span></div>
+                <div>Remaining: <span id="dist-remaining">-- KM</span></div>
+              </div>
+              <div class="flex gap-2">
+                <button id="startSim" class="btn-action bg-green-600">Start Trip</button>
+                <button id="stopSim" class="btn-action bg-red-600">Stop Trip</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trip Details & Actions -->
+          <div class="card-bg p-6 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold mb-4">Trip Details (TRIP7842X9)</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm text-[var(--muted)] mb-4">
+                <div class="flex justify-between border-b border-secondary pb-2"><span>Passengers:</span><span class="font-bold text-text">12/14</span></div>
+                <div class="flex justify-between border-b border-secondary pb-2"><span>E-Ticket Sales:</span><span class="font-bold text-green-400">₱--</span></div>
+                <div class="flex justify-between border-b border-secondary pb-2"><span>Vehicle:</span><span class="font-bold text-text">Van 1 • ABC 1234</span></div>
+                <div class="flex justify-between border-b border-secondary pb-2"><span>Departure Time:</span><span class="font-bold text-text">08:00 AM</span></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+              <button id="endTripBtn" class="btn-action bg-red-600">End Trip</button>
+              <button id="passengerCheckBtn" class="btn-action bg-yellow-600">Passenger Check-in</button>
+              <button id="emergencyBtn" class="btn-action bg-red-500">Emergency</button>
+            </div>
+          </div>
+
+          <!-- Support -->
+          <div class="card-bg p-6 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold mb-3">Driver Support</h3>
+            <p class="text-sm" style="color:var(--muted)">If you need help, call dispatch at <strong>+63 912 345 6789</strong> or use the emergency button in the trip details. For ticketing / bookings issues, open Support Ticket below.</p>
+            <div class="mt-4 flex gap-3">
+              <button id="openSupportTicket" class="px-4 py-2 bg-[var(--highlight)] rounded text-white">Open Ticket</button>
+              <button id="callDispatch" class="px-4 py-2 bg-secondary rounded text-white">Call Dispatch</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE, EARNINGS, SUPPORT sections simplified -->
+    <section class="page-section" id="scheduleSection" style="display:none;">
+      <h2 class="text-3xl font-bold mb-6">My Schedule</h2>
+      <div class="bg-card p-6 rounded-xl shadow-xl">
+        <p class="text-[var(--muted)]">Schedule content goes here...</p>
+      </div>
+    </section>
+
+
+    <section class="page-section" id="earningsSection" style="display:none;">
+      <h2 class="text-3xl font-bold mb-6">Earnings & Analytics</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card-bg p-6 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold text-[var(--muted)]">Today's Earnings</h3>
+            <p class="text-4xl font-extrabold text-green-400 mt-2" id="todaysEarnings">₱--</p>
+        </div>
+        <div class="card-bg p-6 rounded-xl shadow-xl">
+            <h3 class="text-lg font-semibold text-[var(--muted)]">Weekly Trips</h3>
+            <p class="text-4xl font-extrabold text-highlight mt-2" id="weeklyTrips">--</p>
+        </div>
+        <div class="card-bg p-6 rounded-xl shadow-xl" style="display:none;">
+            <!-- rating removed -->
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" id="supportSection" style="display:none;">
+      <h2 class="text-3xl font-bold mb-6">Driver Support</h2>
+      <p class="text-[var(--muted)]">Support and help center content goes here...</p>
+    </section>
+
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-green-500 text-white p-3 rounded-lg shadow-xl opacity-0 transition-opacity duration-300"></div>
+
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="custom-modal-overlay" style="display:none;">
+    <div class="custom-modal">
+      <button class="close-modal px-3 py-1 bg-red-500 rounded text-white" onclick="closeProfile()">Close</button>
+      <h3 class="text-2xl font-semibold mb-3">My Profile</h3>
+      <div class="flex items-center gap-4 mb-4">
+        <img id="profilePicDisplay" src="https://via.placeholder.com/80" alt="Profile Pic" class="w-20 h-20 rounded-full object-cover">
+        <div>
+          <div class="text-xl font-bold" id="profileName">Driver Name</div>
+          <div class="text-sm" style="color:var(--muted)" id="profileEmail">driver@example.com</div>
+        </div>
+      </div>
+      <div class="space-y-2 text-sm text-[var(--muted)]">
+        <div><strong>Address:</strong> <span id="profileAddress">--</span></div>
+        <div><strong>Contact Number:</strong> <span id="profileContact">--</span></div>
+        <div><strong>Vehicle:</strong> <span id="profileVehicle">--</span></div>
+        <div><strong>Plate Number:</strong> <span id="profilePlate">--</span></div>
+        <div><strong>License Number:</strong> <span id="profileLicense">--</span></div>
+        <div><strong>License Expiry:</strong> <span id="profileLicenseExpiry">--</span></div>
+        <div><strong>Area of Operation:</strong> <span id="profileArea">--</span></div>
+        <div><strong>Working Schedule:</strong> <span id="profileSchedule">--</span></div>
+        <div><strong>Experience (Years):</strong> <span id="profileExperience">--</span></div>
+        <div><strong>Date of Birth:</strong> <span id="profileDOB">--</span></div>
+        <div><strong>Gender:</strong> <span id="profileGender">--</span></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Passenger Check-in Modal -->
+  <div id="passengerModal" class="custom-modal-overlay" style="display:none;">
+    <div class="custom-modal">
+      <button class="close-modal px-3 py-1 bg-red-500 rounded text-white" onclick="closePassengers()">Close</button>
+      <h3 class="text-2xl font-semibold mb-3">Passenger Check-in</h3>
+      <div id="passengerList" style="max-height:60vh; overflow:auto;"></div>
+    </div>
+  </div>
+
+  <!-- Emergency Modal -->
+  <div id="emergencyModal" class="custom-modal-overlay" style="display:none;">
+    <div class="custom-modal">
+      <button class="close-modal px-3 py-1 bg-gray-700 rounded text-white" onclick="closeEmergency()">Close</button>
+      <h3 class="text-2xl font-semibold mb-3">Emergency</h3>
+      <p class="text-sm" style="color:var(--muted)">Use the buttons below to call dispatch or show emergency info to passengers.</p>
+      <div class="mt-4 flex gap-3">
+        <button id="callDispatchBtn" class="px-4 py-2 bg-red-600 rounded text-white">Call Dispatch</button>
+        <button id="notifyPassengersBtn" class="px-4 py-2 bg-yellow-600 rounded text-black">Notify Passengers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Support Ticket Modal -->
+  <div id="supportModal" class="custom-modal-overlay" style="display:none;">
+    <div class="custom-modal">
+      <button class="close-modal px-3 py-1 bg-red-500 rounded text-white" onclick="closeSupport()">Close</button>
+      <h3 class="text-2xl font-semibold mb-3">Open Support Ticket</h3>
+      <textarea id="supportMsg" class="w-full p-3 bg-[#0f1724] rounded" placeholder="Describe the issue..."></textarea>
+      <div class="mt-3 flex gap-3">
+        <button id="sendTicket" class="px-4 py-2 bg-[var(--highlight)] rounded text-white">Send Ticket</button>
+      </div>
+    </div>
+  </div>
+
+ <script src="scripts/dashboard.js"></script>
+</body>
+</html>

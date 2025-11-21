@@ -1,0 +1,1282 @@
+/* Blue Color Variables */
+:root {
+    --primary-blue: #4b6691;
+    --primary-blue-dark: #4b6691;
+    --primary-blue-light: #496a94;
+    --background-dark: #4e6980;
+    --card-black: #9cc9ee;
+    --card-hover: #9cc9ee;
+    --text-light: #1e293b;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --info: #3b82f6;
+    --warning: #f59e0b;
+    --gradient-primary: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    --gradient-card: linear-gradient(145deg, var(--card-black) 0%, #9cc9ee 100%);
+    --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--background-dark);
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Enhanced Top Navigation Bar */
+.top-nav-main {
+    background: var(--gradient-primary);
+    padding: 0.1rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    min-height: 110px;
+}
+
+/* Logo Section */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.dashboard-logo {
+    height: 110px;
+    width: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.dashboard-logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-text {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 25px;
+    flex: 1;
+    justify-content: center;
+    margin-left: 40px;
+}
+
+.nav-links .nav-link {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    font-size: 1rem;
+}
+
+.nav-links .nav-link:hover, .nav-links .nav-link.active {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.nav-links .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -8px;
+    left: 50%;
+    background-color: white;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-links .nav-link:hover::after, .nav-links .nav-link.active::after {
+    width: 80%;
+}
+
+/* Navigation Actions */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.user-welcome {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+/* Enhanced Blue Header Bar */
+.topbar {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 70px;
+    z-index: 50;
+    height: 60px;
+}
+
+/* Enhanced Search Bar */
+.search-wrap {
+    position: relative;
+    width: 400px;
+    flex: 0 1 auto;
+}
+
+#search {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    padding-left: 3rem;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+#search:focus {
+    background: rgba(255, 255, 255, 0.3);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+#search::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 1.1rem;
+}
+
+.contact-info {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+
+/* Enhanced Main Content and Sections */
+.content {
+    flex-grow: 1;
+}
+
+.page-section {
+    padding: 3rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-section h2 {
+    font-size: 2.25rem;
+    margin-bottom: 2.5rem;
+    color: var(--text-light);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.75rem;
+    position: relative;
+}
+
+.page-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: var(--primary-blue);
+}
+
+/* Enhanced Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr;
+    gap: 30px;
+}
+
+/* Enhanced Utility Cards */
+.utility-card {
+    background: var(--gradient-card);
+    padding: 1.75rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-card);
+    border-top: 4px solid var(--primary-blue);
+    height: fit-content;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    transform: translateZ(0);
+}
+
+.utility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    background: var(--card-hover);
+}
+
+.utility-card h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+/* Enhanced Forms */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 0.85rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: #ffffff;
+}
+
+.seat-select-group {
+    margin-bottom: 1.75rem;
+}
+
+/* Enhanced Buttons */
+.btn {
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    color: white;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-blue-dark);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #64748b;
+    border: 1px solid #94a3b8;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+    border-color: #64748b;
+    transform: translateY(-2px);
+}
+
+.btn-full-blue {
+    background: var(--gradient-primary);
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-full-blue:hover {
+    background: var(--primary-blue-dark);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Upcoming Trips */
+.upcoming-trips-card {
+    margin-top: 30px;
+}
+
+.upcoming-list .trip-item {
+    background: #f8fafc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--success);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.upcoming-list .trip-item:hover {
+    background: #f1f5f9;
+    transform: translateX(5px);
+}
+
+.upcoming-list .route-details {
+    font-weight: 600;
+    display: block;
+    font-size: 1.05rem;
+}
+
+.upcoming-list .date-details {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.empty-state {
+    padding: 30px;
+    text-align: center;
+    color: var(--text-muted);
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+/* Enhanced Map Tracking */
+.map-container {
+    height: 520px;
+    width: 100%;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.map-info {
+    text-align: center;
+    padding-top: 20px;
+    color: var(--text-muted);
+    background: transparent;
+}
+
+/* Enhanced History List */
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: #f8fafc;
+    padding-left: 10px;
+    border-radius: 6px;
+}
+
+.history-item i {
+    font-size: 1.3rem;
+    margin-right: 15px;
+    color: var(--success);
+}
+
+.history-item .details {
+    flex-grow: 1;
+}
+
+.history-item .driver-info, .history-item .date-time {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.view-all-link {
+    display: block;
+    text-align: right;
+    margin-top: 15px;
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: var(--primary-blue-light);
+    text-decoration: underline;
+}
+
+/* Enhanced Profile Section */
+.profile-form-grid {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 25px;
+}
+
+.profile-form-grid .form-group:nth-child(5) {
+    grid-column: span 2;
+}
+
+.update-btn {
+    margin-right: 20px;
+    width: auto;
+}
+
+/* Enhanced Support Section */
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.support-list {
+    list-style: none;
+    padding: 0;
+}
+
+.support-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.support-list li:hover {
+    background: #f8fafc;
+    padding-left: 10px;
+    border-radius: 6px;
+}
+
+.support-list li a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.support-list li a:hover {
+    color: var(--primary-blue);
+}
+
+.contact-option {
+    padding: 15px 0;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.contact-option:hover {
+    background: #f8fafc;
+    padding-left: 10px;
+    border-radius: 6px;
+}
+
+.contact-option i {
+    color: var(--primary-blue);
+    margin-right: 12px;
+}
+
+.contact-option small {
+    display: block;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.btn-emergency {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-emergency:hover {
+    background: #b91c1c;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Enhanced Custom Modals */
+.custom-modal-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.5); 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    z-index: 9999; 
+    backdrop-filter: blur(5px);
+}
+
+.custom-modal {
+    background: var(--gradient-card);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 650px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    color: var(--text-light);
+    position: relative;
+    border: 1px solid #e2e8f0;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px; 
+    right: 20px;
+    font-size: 1.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close-modal:hover {
+    color: var(--primary-blue);
+    background: #f1f5f9;
+}
+
+/* Enhanced VAN SEAT LAYOUT */
+.van-layout-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0;
+    border: 2px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 12px;
+    background: #f8fafc;
+}
+
+.driver-side, .passenger-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 15px;
+    width: 40%;
+}
+
+.center-aisle {
+    width: 20%;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-row {
+    justify-content: center;
+    gap: 20px;
+}
+
+.seat {
+    width: 100%;
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: 2px solid transparent;
+}
+
+.seat.driver-seat {
+    background: #94a3b8;
+    cursor: default;
+    color: #1e293b;
+    border: none;
+    box-shadow: none;
+}
+
+.seat.available {
+    background: var(--success);
+    color: white;
+}
+
+.seat.available:hover {
+    background: #0da271;
+    transform: scale(1.05);
+}
+
+.seat.unavailable {
+    background: #e53e3e;
+    cursor: not-allowed;
+    color: white;
+}
+
+.seat.selected {
+    background: var(--warning);
+    color: #1e293b;
+    border: 2px solid var(--primary-blue);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+.legend {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    gap: 8px;
+}
+
+.legend-item .seat {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin-right: 0;
+    cursor: default;
+    box-shadow: none;
+    border-radius: 4px;
+}
+
+.seat-select-group .btn-secondary.btn-full {
+    width: auto; 
+    max-width: 250px; 
+    display: block; 
+}
+
+.seat-select-group .form-group input, 
+.seat-select-group .form-group .seat-display-field {
+    max-width: 250px; 
+}
+
+.seat-select-group .btn-secondary {
+    width: auto;
+    max-width: 200px; 
+}
+
+.form-grid {
+    gap: 25px 30px;
+}
+
+
+.utility-card .btn-full-blue {
+    margin-top: 30px; 
+}
+
+
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .support-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav-main, .topbar {
+        padding: 0.75rem 1rem;
+    }
+    
+    .page-section {
+        padding: 2rem 1rem;
+    }
+    
+    .form-grid, .profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-form-grid .form-group:nth-child(5) {
+        grid-column: span 1;
+    }
+    
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}
+
+/* For specific form sections that need more spacing */
+.booking-form .form-grid,
+.profile-form-grid {
+    gap: 30px;
+}
+
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .top-nav-main, .topbar {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+        gap: 15px;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .dashboard-grid-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    #bookNowCard, #upcomingTripsCard, #mapCard, #historySummaryCard {
+        grid-column: 1;
+        grid-row: auto;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .map-container {
+        height: 300px;
+    }
+    
+    .custom-modal {
+        width: 95%;
+        margin: 10px;
+        padding: 1rem;
+    }
+    
+    .van-layout-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .driver-side, .passenger-side {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+/* Kailangan ito para maging magkatabi ang Surname at First Name */
+.form-row {
+    display: flex;
+    gap: 15px; /* Spacing sa gitna ng Surname at First Name */
+    width: 100%;
+}
+
+/* Hatiin ang lapad ng Surname at First Name nang pantay */
+.form-row .form-field {
+    flex: 1; /* Para maghati ng 50/50 */
+}
+
+/* --- History Table Styles --- */
+.full-history-card {
+    /* Optional: Gawing mas mahaba ang container para mas makita ang buong table */
+    width: 100%;
+    overflow-x: auto; /* Para sa responsive scrolling kapag makitid ang screen */
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse; /* Tanggalin ang double lines sa table */
+    margin-top: 15px;
+    font-size: 0.9em;
+    min-width: 600px;
+}
+
+.history-table th, .history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Light separator line */
+}
+
+.history-table thead th {
+    background-color: #3f51b5; /* Primary header color (Navy/Indigo) */
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.history-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: 600;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f5f5f5; /* Highlight row on hover */
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Status Colors */
+.status-confirmed {
+    background-color: #2196F3; /* Blue */
+}
+.status-completed {
+    background-color: #4CAF50; /* Green */
+}
+.status-cancelled {
+    background-color: #F44336; /* Red */
+}
+.status-arrived {
+    background-color: #FF9800; /* Orange */
+}
+
+.view-details {
+    /* Style for the View button */
+    padding: 5px 10px;
+}
+
+/* --- History Table Styles --- */
+.full-history-card {
+    width: 100%;
+    overflow-x: auto; 
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse; 
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.history-table th, .history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; 
+}
+
+.history-table thead th {
+    background-color: #3f51b5; 
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f5f5f5; 
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Status Colors (Para gumana ang status-confirmed, status-completed, etc.) */
+.status-confirmed { background-color: #2196F3; }
+.status-completed { background-color: #4CAF50; }
+.status-cancelled { background-color: #F44336; }
+.status-arrived { background-color: #FF9800; }
+
+/* ========================================================================= */
+/* --- 1. TRIP CARD LAYOUT (Upcoming Trips) --- */
+/* ========================================================================= */
+
+.trip-card {
+    display: flex; /* Ginagawang magkatabi ang details at action */
+    justify-content: space-between; /* Itinutulak sa magkabilang dulo */
+    align-items: center;
+    background-color: #ffffff; /* Puti ang background */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px;
+    margin-bottom: 15px; /* Spacing sa pagitan ng cards */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    transition: transform 0.2s;
+}
+
+.trip-card:hover {
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trip-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Kumakain ng available space */
+}
+
+.trip-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Itutulak ang mga detalye sa kanan */
+    min-width: 120px;
+}
+
+/* ========================================================================= */
+/* --- 2. TRIP CARD TYPOGRAPHY & STATUS --- */
+/* ========================================================================= */
+
+.route-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #3f51b5; /* Primary color */
+    margin-bottom: 5px;
+}
+
+.driver-info,
+.date-time,
+.seat-info {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.seat-info strong {
+    color: #000;
+}
+
+/* Status Badge */
+.status-info {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+    margin-top: 8px;
+    color: white;
+}
+
+/* Status Colors (Match with PHP output) */
+.status-confirmed {
+    background-color: #4CAF50; /* Green */
+}
+
+.status-arrived {
+    background-color: #FF9800; /* Orange/Amber */
+}
+
+.status-completed, .status-cancelled, .status-unknown {
+    background-color: #9E9E9E; /* Gray (for past/other statuses) */
+}
+
+/* ========================================================================= */
+/* --- 3. RESPONSIVENESS (for smaller screens) --- */
+/* ========================================================================= */
+
+@media (max-width: 600px) {
+    .trip-card {
+        flex-direction: column; /* Ginagawang column sa maliit na screen */
+        align-items: flex-start;
+    }
+
+    .trip-action {
+        width: 100%;
+        align-items: flex-start; /* Itutulak sa kaliwa ang details sa maliit na screen */
+        border-top: 1px dashed #eee;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+}
+
+/* Para hindi nakalutang sa lower left ang "Seat X selected" */
+#toast {
+    visibility: hidden; 
+    min-width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 16px;
+    position: fixed; /* Ginagawang fixed ang posisyon */
+    z-index: 9999; 
+    left: 50%; 
+    bottom: 30px; 
+    transform: translateX(-50%); /* Para sentro sa gitna */
+    font-size: 17px;
+}
+
+#toast.show {
+    visibility: visible;
+    /* (Add animations here) */
+}
+
+.dashboard-grid-container {
+    display: grid;
+    grid-template-columns: 3fr 4fr 3fr;
+    grid-template-rows: minmax(600px, auto) auto auto; 
+    gap: 40px;
+    padding: 40px;
+    min-height: 80vh;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+/* 1. BOOK NOW CARD (Row 1-2, Column 1) - Same height as map */
+#bookNowCard {
+    grid-column: 1 / 2; /* Unang column */
+    grid-row: 1 / span 2; /* Dalawang rows - same as map */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 2. UPCOMING TRIPS CARD (Row 3, Column 1-2) - Hiwalay sa map */
+#upcomingTripsCard {
+    grid-column: 1 / 3; /* Mula column 1 hanggang column 2 */
+    grid-row: 3 / 4;    /* Pangatlong row - malayo sa map */
+    overflow-x: auto;
+    min-height: 300px;
+}
+
+/* 3. LIVE TRIP TRACKING (Row 1 & 2, Column 2) - Dalawang rows lang */
+#mapCard {
+    grid-column: 2 / 3; /* Gitnang column */
+    grid-row: 1 / span 2; /* I-stretch sa dalawang rows (row 1 at row 2) */
+    display: flex; /* Para ang content sa loob ay mag-fit */
+    flex-direction: column;
+    height: 100%;
+}
+.map-container {
+    flex-grow: 1;
+    height: 100%;
+    min-height: 600px;
+    width: 100%;
+}
+
+
+/* 4. TRIP HISTORY SUMMARY (Row 1, Column 3) - Nasa kanan, itaas lang */
+#historySummaryCard {
+    grid-column: 3 / 4; /* Huling column */
+    grid-row: 1 / 2;    /* Unang row */
+}
+
+
+/* Kung may history/profile/support section, i-wrap lang sa .content */
+.page-section {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ========================================================================= */
+/* --- UPCOMING TRIPS TABLE STYLES --- */
+/* ========================================================================= */
+
+.upcoming-trips-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.85em;
+    background-color: white;
+    min-width: 800px;
+}
+
+.upcoming-trips-table th,
+.upcoming-trips-table td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.upcoming-trips-table thead th {
+    background-color: #3f51b5;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.upcoming-trips-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.upcoming-trips-table .passenger-cell {
+    font-weight: 600;
+    color: #333;
+}
+
+.upcoming-trips-table .route-cell {
+    font-weight: bold;
+    color: #3f51b5;
+}
+
+.upcoming-trips-table .destination-cell {
+    color: #666;
+}
+
+.upcoming-trips-table .date-cell {
+    font-size: 0.85em;
+    color: #666;
+    white-space: nowrap;
+}
+
+.upcoming-trips-table .time-cell {
+    font-size: 0.85em;
+    color: #666;
+    white-space: nowrap;
+}
+
+.upcoming-trips-table .seat-cell {
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.upcoming-trips-table .status-cell {
+    text-align: center;
+}
+
+#upcomingTripsCard {
+    overflow-x: auto;
+    min-height: 300px;
+}
+
+/* ========================================================================= */
+/* --- BOOKING FORM STYLES --- */
+/* ========================================================================= */
+
+.seat-select-group .btn-secondary {
+    margin-bottom: 40px;
+}
+
+.seat-display-field {
+    margin-top: 30px;
+}
+
+#bookNowCard .btn-submit {
+    margin-top: auto;
+    align-self: center;
+}
+
+/* ========================================================================= */
+/* --- MAP TRACKING STYLES --- */
+/* ========================================================================= */
+
+.map-info {
+    padding: 10px;
+    background-color: transparent;
+    border-top: none;
+    text-align: center;
+}
+
+.map-info p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+#trackActiveTripBtn {
+    margin-top: 10px;
+}
+
+#trackingMap {
+    height: 100%;
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Google Street View specific styles */
+.gm-style {
+    border-radius: 8px;
+}
+
+.gm-style-iw {
+    border-radius: 4px;
+}
+
+/* Street View controls styling */
+.gm-svpc {
+    border-radius: 8px;
+}

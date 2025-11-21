@@ -1,0 +1,32 @@
+# Database configuration files
+Php/config.php
+Php/db.php
+
+# Environment files
+.env
+.env.local
+
+# Log files
+*.log
+logs/
+
+# Cache directories
+cache/
+tmp/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# XAMPP specific
+/xampp/

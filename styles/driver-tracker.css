@@ -1,0 +1,110 @@
+/* ========================================================================= */
+/* --- DRIVER LIVE TRACKER STYLES --- */
+/* ========================================================================= */
+
+.driver-marker {
+    background: transparent;
+    border: none;
+}
+
+.driver-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+}
+
+.driver-pulse {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(66, 153, 225, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.driver-dot {
+    position: relative;
+    z-index: 2;
+    font-size: 20px;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.driver-popup {
+    min-width: 180px;
+}
+
+.driver-popup h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 14px;
+}
+
+.driver-popup p {
+    margin: 2px 0;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Speed gauge enhancements */
+#speed-gauge-ring {
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Trip control buttons */
+.btn-action {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-action:active {
+    transform: translateY(0);
+}
+
+/* Map container enhancements */
+#map {
+    border: 2px solid rgba(66, 153, 225, 0.3);
+    transition: border-color 0.3s;
+}
+
+#map:hover {
+    border-color: rgba(66, 153, 225, 0.6);
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.leaflet-popup-content {
+    margin: 12px;
+}
+
+.leaflet-popup-tip {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
