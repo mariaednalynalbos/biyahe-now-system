@@ -28,5 +28,23 @@ Thumbs.db
 *.bak
 *.backup
 
+# Large files (>25MB)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Images (large)
+*.psd
+*.ai
+
+# Database dumps
+*.sql
+*.dump
+
 # XAMPP specific
 /xampp/
