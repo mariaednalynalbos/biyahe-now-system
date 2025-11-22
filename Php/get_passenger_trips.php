@@ -6,7 +6,7 @@ require_once 'db.php';
 
 // Check session
 if (!isset($_SESSION['passenger_id']) && !isset($_SESSION['account_id'])) {
-    echo json_encode(['success' => false, 'message' => "Not logged in"]);
+    echo json_encode(['success' => false, 'message' => "Not logged in", 'session_debug' => $_SESSION]);
     exit;
 }
 
@@ -24,8 +24,9 @@ try {
                 routes r ON b.route_id = r.route_id
             WHERE 
                 b.passenger_id = :id
+                AND (b.status IN ('Pending', 'Confirmed') OR b.status = '' OR b.status IS NULL)
             ORDER BY 
-                b.booking_date DESC, b.departure_time DESC
+                b.booking_date ASC, b.departure_time ASC
             LIMIT 10
         ";
     } else {
@@ -52,6 +53,13 @@ try {
     $stmt->execute();
     $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Get all bookings for debug
+    $debugSql = "SELECT * FROM bookings WHERE passenger_id = :id ORDER BY booking_date DESC";
+    $debugStmt = $pdo->prepare($debugSql);
+    $debugStmt->bindParam(':id', $passenger_id);
+    $debugStmt->execute();
+    $allBookings = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode([
         'success' => true, 
         'trips' => $trips, 
@@ -59,7 +67,7 @@ try {
             'passenger_id' => $passenger_id, 
             'type' => $type, 
             'count' => count($trips),
-            'all_bookings' => $trips
+            'all_bookings' => $allBookings
         ]
     ]);
 

@@ -58,10 +58,28 @@ document.addEventListener('DOMContentLoaded', () => {
     populateRouteDropdown();
 
     // ===============================
-    // 2. WORKING MAP WITH LOCATION TRACKING
+    // 2. LIVE TRACKING MAP WITH ROAD-TO-ROAD ROUTING
     // ===============================
     let userLocationMarker = null;
+    let destinationMarker = null;
+    let routingControl = null;
     let watchId = null;
+    let currentPosition = null;
+    let isTracking = false;
+    
+    // Route coordinates
+    const routeCoordinates = {
+        '1': { // Naval to Tacloban
+            start: [11.5564, 124.2992], // Naval
+            end: [11.2406, 125.0022],   // Tacloban
+            name: 'Naval → Tacloban'
+        },
+        '2': { // Naval to Ormoc
+            start: [11.5564, 124.2992], // Naval
+            end: [11.0059, 124.6074],   // Ormoc
+            name: 'Naval → Ormoc'
+        }
+    };
     
     function initTrackingMap() {
         if (!trackingMap) return;
@@ -72,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof L === 'undefined') return;
 
         // Initialize map
-        mapInstance = L.map('trackingMap').setView([11.2406, 125.0022], 15);
+        mapInstance = L.map('trackingMap').setView([11.2406, 125.0022], 12);
 
         // Add tile layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -82,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Start location tracking
         startLocationTracking();
+        
+        // Show active trip route if available
+        showActiveTrip();
     }
     
     function startLocationTracking() {
@@ -97,33 +118,52 @@ document.addEventListener('DOMContentLoaded', () => {
             (position) => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
+                currentPosition = [lat, lng];
                 
                 // Remove existing marker
                 if (userLocationMarker) {
                     mapInstance.removeLayer(userLocationMarker);
                 }
                 
+                // Create custom icon for user location
+                const userIcon = L.divIcon({
+                    className: 'user-location-marker',
+                    html: `
+                        <div style="
+                            width: 20px; height: 20px; 
+                            background: #4285f4; 
+                            border: 3px solid white;
+                            border-radius: 50%;
+                            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                        "></div>
+                    `,
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10]
+                });
+                
                 // Add new marker
-                userLocationMarker = L.marker([lat, lng]).addTo(mapInstance)
-                    .bindPopup(`Your Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`);
+                userLocationMarker = L.marker([lat, lng], { icon: userIcon }).addTo(mapInstance)
+                    .bindPopup(`📍 Your Current Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`);
                 
-                // Center map on user location
-                mapInstance.setView([lat, lng], 17);
+                mapInstance.setView([lat, lng], 15);
                 
-                document.getElementById('currentTripInfo').textContent = `Location: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                // Setup road routing if destination exists
+                setupRoute();
+                
+                document.getElementById('currentTripInfo').textContent = `📍 Live tracking started`;
             },
             (error) => {
                 console.error('Geolocation error:', error);
                 let errorMsg = 'Unable to get location.';
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
-                        errorMsg = 'Location access denied by user.';
+                        errorMsg = '❌ Location access denied. Please enable location.';
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        errorMsg = 'Location information unavailable.';
+                        errorMsg = '❌ Location information unavailable.';
                         break;
                     case error.TIMEOUT:
-                        errorMsg = 'Location request timed out.';
+                        errorMsg = '❌ Location request timed out.';
                         break;
                 }
                 document.getElementById('currentTripInfo').textContent = errorMsg;
@@ -144,14 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
             (position) => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
+                currentPosition = [lat, lng];
                 
                 // Update marker position
                 if (userLocationMarker) {
                     userLocationMarker.setLatLng([lat, lng]);
-                    userLocationMarker.getPopup().setContent(`Your Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`);
+                    userLocationMarker.getPopup().setContent(`📍 Your Current Location<br>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}`);
                 }
                 
-                document.getElementById('currentTripInfo').textContent = `Tracking: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                // Update route if tracking
+                if (routingControl && isTracking) {
+                    updateRoute();
+                }
             },
             (error) => {
                 console.error('Watch position error:', error);
@@ -164,9 +208,115 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
     
+    function setupRoute() {
+        if (!currentPosition || typeof L.Routing === 'undefined') return;
+        
+        // Get destination from active trip
+        fetch('../Php/get_passenger_trips.php?type=upcoming')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Trip data:', data); // Debug log
+                if (data.success && data.trips.length > 0) {
+                    const activeTrip = data.trips[0];
+                    const routeId = String(activeTrip.route_id); // Convert to string
+                    console.log('Route ID:', routeId, 'Available routes:', Object.keys(routeCoordinates)); // Debug log
+                    
+                    if (routeCoordinates[routeId]) {
+                        const route = routeCoordinates[routeId];
+                        const endPoint = L.latLng(route.end[0], route.end[1]);
+                        
+                        // Remove existing routing
+                        if (routingControl) {
+                            mapInstance.removeControl(routingControl);
+                        }
+                        
+                        // Create road routing
+                        routingControl = L.Routing.control({
+                            waypoints: [L.latLng(currentPosition[0], currentPosition[1]), endPoint],
+                            routeWhileDragging: false,
+                            showAlternatives: false,
+                            router: L.Routing.osrmv1 ? L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }) : undefined,
+                            lineOptions: { styles: [{ color: '#4285f4', weight: 6, opacity: 0.8 }] },
+                            createMarker: function() { return null; }
+                        }).addTo(mapInstance);
+                        
+                        // Add destination marker
+                        if (destinationMarker) {
+                            mapInstance.removeLayer(destinationMarker);
+                        }
+                        
+                        const destIcon = L.divIcon({
+                            className: 'destination-marker',
+                            html: `<div style="width: 30px; height: 30px; background: #ea4335; border: 3px solid white; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 30]
+                        });
+                        
+                        destinationMarker = L.marker(route.end, { icon: destIcon }).addTo(mapInstance)
+                            .bindPopup(`🎯 Destination: ${route.name.split(' → ')[1]}<br>📅 ${activeTrip.booking_date}<br>🕐 ${activeTrip.departure_time}`);
+                        
+                        isTracking = true;
+                        
+                        routingControl.on('routesfound', function(e) {
+                            const routeData = e.routes[0];
+                            const distance = (routeData.summary.totalDistance / 1000).toFixed(1);
+                            const timeSec = routeData.summary.totalTime;
+                            const eta = new Date(Date.now() + timeSec * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            document.getElementById('currentTripInfo').textContent = `🚐 Active Trip: ${route.name} | ${distance}km | ETA: ${eta}`;
+                        });
+                    } else {
+                        console.log('Route not found for ID:', routeId);
+                        document.getElementById('currentTripInfo').textContent = `📍 Trip found but route mapping missing for ID: ${routeId}`;
+                    }
+                } else {
+                    console.log('No active trips found');
+                }
+            })
+            .catch(error => console.error('Error setting up route:', error));
+    }
+    
+    function updateRoute() {
+        if (!routingControl || !currentPosition) return;
+        
+        try {
+            const waypoints = routingControl.getWaypoints();
+            if (waypoints.length >= 2) {
+                waypoints[0].latLng = L.latLng(currentPosition[0], currentPosition[1]);
+                routingControl.setWaypoints(waypoints);
+            }
+        } catch (err) {
+            console.warn('Route update error', err);
+        }
+    }
+
+    // Show active trip route on map
+    async function showActiveTrip() {
+        try {
+            const response = await fetch('../Php/get_passenger_trips.php?type=upcoming');
+            const data = await response.json();
+            
+            if (data.success && data.trips.length > 0) {
+                const activeTrip = data.trips[0];
+                document.getElementById('currentTripInfo').textContent = `🚐 Active Trip: Seat ${activeTrip.seat_number}`;
+            } else {
+                document.getElementById('currentTripInfo').textContent = '📍 No active trips. Your location will be tracked.';
+            }
+        } catch (error) {
+            console.error('Error loading active trip:', error);
+            document.getElementById('currentTripInfo').textContent = '📍 Ready for location tracking.';
+        }
+    }
+    
     // Center tracking button functionality
     document.getElementById('trackActiveTripBtn')?.addEventListener('click', () => {
-        if (userLocationMarker && mapInstance) {
+        if (routingControl && mapInstance) {
+            // Fit map to show full route
+            const waypoints = routingControl.getWaypoints();
+            if (waypoints.length >= 2) {
+                const group = new L.featureGroup([L.marker(waypoints[0].latLng), L.marker(waypoints[1].latLng)]);
+                mapInstance.fitBounds(group.getBounds().pad(0.1));
+            }
+        } else if (userLocationMarker && mapInstance) {
             mapInstance.setView(userLocationMarker.getLatLng(), 17);
         } else {
             startLocationTracking();
@@ -178,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const trackBtn = document.getElementById('trackActiveTripBtn');
         if (trackBtn) {
             trackBtn.style.display = 'inline-block';
-            trackBtn.textContent = 'Center on My Location';
+            trackBtn.textContent = '🎯 View Full Route';
         }
     }
 
@@ -197,10 +347,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sectionId === 'dashboard') {
             fetchUpcomingTrips();
-            initTrackingMap();
-            showTrackingButton();
+            setTimeout(() => {
+                initTrackingMap();
+                showTrackingButton();
+            }, 100);
         }
         if (sectionId === 'history') fetchTripHistory();
+        if (sectionId === 'profile') storeOriginalData();
     }
 
     navLinks.forEach(link => {
@@ -451,7 +604,144 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===============================
-    // 10. LOGOUT CONFIRMATION
+    // 10. PROFILE MANAGEMENT
+    // ===============================
+    let originalProfileData = {};
+    
+    // Store original data for cancel functionality
+    function storeOriginalData() {
+        originalProfileData = {
+            firstname: document.getElementById('profileFirstName').value,
+            lastname: document.getElementById('profileLastName').value,
+            email: document.getElementById('profileEmail').value,
+            contact_number: document.getElementById('profilePhone').value,
+            address: document.getElementById('profileAddress').value,
+            gender: document.getElementById('profileGender').value,
+            date_of_birth: document.getElementById('profileDOB').value
+        };
+    }
+    
+    // Initialize original data on page load
+    storeOriginalData();
+    
+    // Edit profile button
+    document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+        const inputs = document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select');
+        inputs.forEach(input => {
+            input.disabled = false;
+            input.style.background = '#ffffff';
+        });
+        
+        document.getElementById('editProfileBtn').style.display = 'none';
+        document.getElementById('saveProfileBtn').style.display = 'inline-flex';
+        document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+    });
+    
+    // Cancel edit button
+    document.getElementById('cancelEditBtn')?.addEventListener('click', () => {
+        // Restore original data
+        document.getElementById('profileFirstName').value = originalProfileData.firstname || '';
+        document.getElementById('profileLastName').value = originalProfileData.lastname || '';
+        document.getElementById('profileEmail').value = originalProfileData.email || '';
+        document.getElementById('profilePhone').value = originalProfileData.contact_number || '';
+        document.getElementById('profileAddress').value = originalProfileData.address || '';
+        document.getElementById('profileGender').value = originalProfileData.gender || '';
+        document.getElementById('profileDOB').value = originalProfileData.date_of_birth || '';
+        
+        // Disable inputs
+        const inputs = document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select');
+        inputs.forEach(input => {
+            input.disabled = true;
+            input.style.background = '#f1f5f9';
+        });
+        
+        document.getElementById('editProfileBtn').style.display = 'inline-flex';
+        document.getElementById('saveProfileBtn').style.display = 'none';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+    });
+    
+    // Save profile form
+    document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('firstName', document.getElementById('profileFirstName').value);
+        formData.append('lastName', document.getElementById('profileLastName').value);
+        formData.append('email', document.getElementById('profileEmail').value);
+        formData.append('contactNumber', document.getElementById('profilePhone').value);
+        formData.append('address', document.getElementById('profileAddress').value);
+        formData.append('gender', document.getElementById('profileGender').value);
+        formData.append('dateOfBirth', document.getElementById('profileDOB').value);
+        
+        fetch('../Php/update_passenger_profile.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Profile updated successfully');
+                
+                // Update display name
+                const firstName = document.getElementById('profileFirstName').value;
+                const lastName = document.getElementById('profileLastName').value;
+                const email = document.getElementById('profileEmail').value;
+                document.getElementById('profileDisplayName').textContent = `${firstName} ${lastName}`.trim() || 'Passenger';
+                document.getElementById('profileDisplayEmail').textContent = email || 'No email';
+                
+                // Store new original data
+                storeOriginalData();
+                
+                // Disable inputs
+                const inputs = document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                    input.style.background = '#f1f5f9';
+                });
+                
+                document.getElementById('editProfileBtn').style.display = 'inline-flex';
+                document.getElementById('saveProfileBtn').style.display = 'none';
+                document.getElementById('cancelEditBtn').style.display = 'none';
+            } else {
+                showModal('Error', data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+            showModal('Error', 'Failed to update profile', true);
+        });
+    });
+    
+    // Change password form
+    document.getElementById('passwordForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('currentPassword', document.getElementById('currentPassword').value);
+        formData.append('newPassword', document.getElementById('newPassword').value);
+        formData.append('confirmPassword', document.getElementById('confirmPassword').value);
+        
+        fetch('../Php/change_passenger_password.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Password changed successfully');
+                document.getElementById('passwordForm').reset();
+            } else {
+                showModal('Error', data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error changing password:', error);
+            showModal('Error', 'Failed to change password', true);
+        });
+    });
+
+    // ===============================
+    // 11. LOGOUT CONFIRMATION
     // ===============================
     function showLogoutConfirm(message, callback) {
         const modal = document.createElement('div');

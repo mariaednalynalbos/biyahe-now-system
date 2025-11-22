@@ -34,6 +34,24 @@ if (empty($driver_id)) {
 }
 
 try {
+    // Check if driver_assignments table exists, create if not
+    $checkTable = "SHOW TABLES LIKE 'driver_assignments'";
+    $tableExists = $pdo->query($checkTable)->rowCount() > 0;
+    
+    if (!$tableExists) {
+        $createTable = "
+            CREATE TABLE driver_assignments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                driver_id VARCHAR(50),
+                route_id INT,
+                time_slot TIME,
+                status ENUM('Available', 'On Trip', 'Unassigned') DEFAULT 'Unassigned',
+                assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ";
+        $pdo->exec($createTable);
+    }
+    
     // Get driver's assigned route and time
     $assignSql = "SELECT route_id, time_slot FROM driver_assignments WHERE driver_id = ? AND status IN ('Available', 'On Trip')";
     $assignStmt = $pdo->prepare($assignSql);
@@ -45,14 +63,14 @@ try {
         exit;
     }
     
-    // Count passengers for this route and time today
+    // Count PENDING passengers for this route and time today (for notifications)
     $passengerSql = "
         SELECT COUNT(*) as count 
         FROM bookings 
         WHERE route_id = ? 
         AND departure_time = ? 
         AND booking_date = CURDATE() 
-        AND status IN ('Pending', 'Confirmed')
+        AND status = 'Pending'
     ";
     $passengerStmt = $pdo->prepare($passengerSql);
     $passengerStmt->execute([$assignment['route_id'], $assignment['time_slot']]);
@@ -64,16 +82,24 @@ try {
     $debugStmt->execute([$assignment['route_id'], $assignment['time_slot']]);
     $allBookings = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
     
+    // Count total passengers (Pending + Confirmed)
+    $totalSql = "SELECT COUNT(*) as total FROM bookings WHERE route_id = ? AND departure_time = ? AND booking_date = CURDATE() AND status IN ('Pending', 'Confirmed')";
+    $totalStmt = $pdo->prepare($totalSql);
+    $totalStmt->execute([$assignment['route_id'], $assignment['time_slot']]);
+    $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
+    
     echo json_encode([
         'success' => true, 
-        'count' => (int)$result['count'],
+        'count' => (int)$result['count'], // Pending count for notifications
+        'total_passengers' => (int)$totalResult['total'], // Total passengers
         'route_id' => $assignment['route_id'],
         'time_slot' => $assignment['time_slot'],
         'debug' => [
             'driver_id' => $driver_id,
             'account_id' => $account_id,
             'assignment' => $assignment,
-            'query_result' => $result,
+            'pending_count' => $result['count'],
+            'total_count' => $totalResult['total'],
             'all_bookings_today' => $allBookings
         ]
     ]);

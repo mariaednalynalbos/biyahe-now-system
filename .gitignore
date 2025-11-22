@@ -1,18 +1,19 @@
-# Database configuration files
-Php/config.php
-Php/db.php
-
 # Environment files
 .env
 .env.local
+.env.production
 
-# Log files
+# Database backups
+*.sql
+*.db
+
+# Logs
 *.log
-logs/
+error_log
 
-# Cache directories
-cache/
-tmp/
+# Temporary files
+*.tmp
+*.temp
 
 # IDE files
 .vscode/
@@ -20,31 +21,15 @@ tmp/
 *.swp
 *.swo
 
-# OS generated files
+# OS files
 .DS_Store
 Thumbs.db
 
-# Backup files
-*.bak
-*.backup
-
-# Large files (>25MB)
+# Large media files (use Git LFS if needed)
 *.mp4
 *.avi
 *.mov
-*.mkv
-*.zip
-*.rar
-*.7z
-*.tar.gz
+*.wmv
 
-# Images (large)
-*.psd
-*.ai
-
-# Database dumps
-*.sql
-*.dump
-
-# XAMPP specific
-/xampp/
+# Sensitive configuration
+config.local.php

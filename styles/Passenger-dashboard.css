@@ -1280,3 +1280,153 @@ body {
 .gm-svpc {
     border-radius: 8px;
 }
+
+/* Enhanced Profile Section Styles */
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-info-card {
+    background: var(--gradient-card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-avatar {
+    font-size: 60px;
+    color: var(--primary-blue);
+}
+
+.profile-basic-info h3 {
+    margin: 0 0 5px 0;
+    color: var(--text-light);
+    font-size: 24px;
+}
+
+.profile-basic-info p {
+    margin: 0 0 8px 0;
+    color: var(--text-muted);
+    font-size: 16px;
+}
+
+.profile-status {
+    background: var(--success);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.profile-form-card,
+.password-form-card {
+    background: var(--gradient-card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+}
+
+.profile-form-card h4,
+.password-form-card h4 {
+    margin: 0 0 20px 0;
+    color: var(--text-light);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.profile-form-vertical .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-form-vertical label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.profile-form-vertical input,
+.profile-form-vertical textarea,
+.profile-form-vertical select {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--text-light);
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.profile-form-vertical input:disabled,
+.profile-form-vertical textarea:disabled,
+.profile-form-vertical select:disabled {
+    background: #f1f5f9;
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.profile-form-vertical input:focus,
+.profile-form-vertical textarea:focus,
+.profile-form-vertical select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.profile-actions .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .profile-container {
+        max-width: 100%;
+        padding: 0 16px;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .profile-avatar {
+        font-size: 48px;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+    }
+    
+    .profile-actions .btn {
+        width: 100%;
+    }
+}

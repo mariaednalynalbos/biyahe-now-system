@@ -23,11 +23,37 @@ if ($account_id) {
 }
 
 if (empty($driver_id)) {
-    echo json_encode(['success' => false, 'message' => 'Driver not found', 'passengers' => []]);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Driver not found', 
+        'passengers' => [],
+        'debug' => [
+            'account_id' => $account_id,
+            'session' => $_SESSION
+        ]
+    ]);
     exit;
 }
 
 try {
+    // Check if driver_assignments table exists, create if not
+    $checkTable = "SHOW TABLES LIKE 'driver_assignments'";
+    $tableExists = $pdo->query($checkTable)->rowCount() > 0;
+    
+    if (!$tableExists) {
+        $createTable = "
+            CREATE TABLE driver_assignments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                driver_id VARCHAR(50),
+                route_id INT,
+                time_slot TIME,
+                status ENUM('Available', 'On Trip', 'Unassigned') DEFAULT 'Unassigned',
+                assigned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ";
+        $pdo->exec($createTable);
+    }
+    
     // Get driver's assigned route and time
     $assignSql = "SELECT route_id, time_slot FROM driver_assignments WHERE driver_id = ? AND status IN ('Available', 'On Trip')";
     $assignStmt = $pdo->prepare($assignSql);
@@ -35,7 +61,15 @@ try {
     $assignment = $assignStmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$assignment) {
-        echo json_encode(['success' => true, 'passengers' => [], 'message' => 'No route assigned']);
+        echo json_encode([
+            'success' => true, 
+            'passengers' => [], 
+            'message' => 'No route assigned',
+            'debug' => [
+                'driver_id' => $driver_id,
+                'account_id' => $account_id
+            ]
+        ]);
         exit;
     }
     
@@ -68,6 +102,14 @@ try {
     ]);
     
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error', 'passengers' => []]);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Database error: ' . $e->getMessage(), 
+        'passengers' => [],
+        'debug' => [
+            'driver_id' => $driver_id,
+            'error' => $e->getMessage()
+        ]
+    ]);
 }
 ?>

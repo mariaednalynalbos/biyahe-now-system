@@ -7,23 +7,55 @@ if (!isset($_SESSION['account_id'])) {
     exit;
 }
 
-// Get passenger name from database if logged in as passenger
-$displayName = 'Passenger';
+// Get passenger data from database
+$displayName = 'User';
+$passengerData = [];
+
+// Try to get name from session first
+if (isset($_SESSION['first_name']) && !empty($_SESSION['first_name'])) {
+    $displayName = $_SESSION['first_name'];
+}
+
 if (isset($_SESSION['account_id']) && $_SESSION['role'] === 'passenger') {
     try {
         require_once 'db.php';
-        $sql = "SELECT firstname, lastname FROM passengers WHERE passenger_id = ? OR account_id = ?";
+        
+        // Get passenger data with user email
+        $sql = "
+            SELECT 
+                p.firstname, p.lastname, p.contact_number, p.address, 
+                p.gender, p.date_of_birth, u.email
+            FROM passengers p
+            LEFT JOIN users u ON p.account_id = u.account_id
+            WHERE p.account_id = ?
+        ";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$_SESSION['account_id'], $_SESSION['account_id']]);
-        $passenger = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($passenger) {
-            $displayName = $passenger['firstname'] ?? $_SESSION['first_name'] ?? 'Passenger';
+        $stmt->execute([$_SESSION['account_id']]);
+        $passengerData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Debug: Check what data we got
+        error_log('Account ID: ' . $_SESSION['account_id']);
+        error_log('Passenger Data: ' . print_r($passengerData, true));
+        
+        if ($passengerData && !empty($passengerData['firstname'])) {
+            $displayName = $passengerData['firstname'];
+            $_SESSION['first_name'] = $passengerData['firstname'];
+            $_SESSION['email'] = $passengerData['email'];
+        } else {
+            // Try users table for basic info
+            $userSql = "SELECT username, email FROM users WHERE account_id = ?";
+            $userStmt = $pdo->prepare($userSql);
+            $userStmt->execute([$_SESSION['account_id']]);
+            $userData = $userStmt->fetch(PDO::FETCH_ASSOC);
+            if ($userData) {
+                $displayName = $userData['username'] ?: 'User';
+                $_SESSION['email'] = $userData['email'];
+                $_SESSION['first_name'] = $displayName;
+            }
         }
     } catch (Exception $e) {
-        $displayName = $_SESSION['first_name'] ?? 'Passenger';
+        $displayName = 'Passenger';
     }
-} else {
-    $displayName = $_SESSION['first_name'] ?? 'Passenger';
 }
 
 
@@ -47,8 +79,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
 
     <link rel="stylesheet" href="../styles/Passenger-dashboard.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     </head>
 <body>
     
@@ -166,28 +200,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
                         </div>
                     </div>
 
-                    <div class="utility-card trip-history-card" id="historySummaryCard">
-                        <h3>Trip History</h3>
-                        <div class="history-list" id="recentHistoryList">
-                            <div class="history-item">
-                                <i class="fas fa-check-circle success"></i>
-                                <div class="details">
-                                    <span class="route-name">Tacloban to Naval</span>
-                                    <span class="driver-info">Driver: Pedro Reyes | Van: Van 2</span>
-                                    <span class="date-time">Oct 20, 2024 @ 10:00 AM</span>
-                                </div>
-                            </div>
-                            <div class="history-item">
-                                <i class="fas fa-check-circle success"></i>
-                                <div class="details">
-                                    <span class="route-name">Ormoc to Cebu</span>
-                                    <span class="driver-info">Driver: Maria Dela Cruz | Van: Van 5</span>
-                                    <span class="date-time">Sep 5, 2024 @ 07:30 AM</span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#" class="view-all-link" data-section="history">View All History <i class="fas fa-chevron-right"></i></a>
-                    </div>
+
                     
                 </div>
             </section>
@@ -203,38 +216,108 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
         </section>
 
         <section class="page-section" id="profileSection" style="display:none;">
-            <h2>My Profile (Update Account)</h2>
-            <div class="profile-card utility-card">
-                <form id="profileForm">
-                    <div class="form-grid profile-form-grid">
-                        <div class="form-group">
-                            <label>First Name</label>
-                            <input type="text" id="profileFirstName" value="Passenger" required>
+            <h2>My Profile</h2>
+            <div class="profile-container">
+                <!-- Profile Info Card -->
+                <div class="profile-info-card utility-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
                         </div>
-                         <div class="form-group">
-                            <label>Last Name</label>
-                            <input type="text" id="profileLastName" value="One" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="profileEmail" value="passenger@test.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone Number</label>
-                            <input type="tel" id="profilePhone" value="0917xxxxxxx">
-                        </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea id="profileAddress">Tacloban City, Leyte</textarea>
+                        <div class="profile-basic-info">
+                            <h3 id="profileDisplayName"><?php 
+                                $fullName = trim(($passengerData['firstname'] ?? '') . ' ' . ($passengerData['lastname'] ?? ''));
+                                if (empty($fullName)) {
+                                    $fullName = $displayName;
+                                }
+                                echo htmlspecialchars($fullName);
+                            ?></h3>
+                            <p id="profileDisplayEmail"><?php echo htmlspecialchars($_SESSION['email'] ?? 'No email'); ?></p>
+                            <span class="profile-status">Active Passenger</span>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full-red update-btn">
-                        <i class="fas fa-save"></i> Update Profile
-                    </button>
-                    <button type="button" class="btn btn-secondary update-btn">
-                        <i class="fas fa-key"></i> Change Password
-                    </button>
+                </div>
+
+                <!-- Update Profile Card -->
+                <div class="profile-form-card utility-card">
+                    <h4><i class="fas fa-edit"></i> Update Profile Information</h4>
+                    <form id="profileForm">
+                        <div class="profile-form-vertical">
+                            <div class="form-group">
+                                <label for="profileFirstName">First Name</label>
+                                <input type="text" id="profileFirstName" name="firstName" value="<?php echo htmlspecialchars($passengerData['firstname'] ?? ''); ?>" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileLastName">Last Name</label>
+                                <input type="text" id="profileLastName" name="lastName" value="<?php echo htmlspecialchars($passengerData['lastname'] ?? ''); ?>" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileEmail">Email Address</label>
+                                <input type="email" id="profileEmail" name="email" value="<?php echo htmlspecialchars($passengerData['email'] ?? ''); ?>" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profilePhone">Contact Number</label>
+                                <input type="tel" id="profilePhone" name="contactNumber" value="<?php echo htmlspecialchars($passengerData['contact_number'] ?? ''); ?>" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileAddress">Address</label>
+                                <textarea id="profileAddress" name="address" rows="3" disabled><?php echo htmlspecialchars($passengerData['address'] ?? ''); ?></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileGender">Gender</label>
+                                <select id="profileGender" name="gender" disabled>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male" <?php echo ($passengerData['gender'] ?? '') === 'Male' ? 'selected' : ''; ?>>Male</option>
+                                    <option value="Female" <?php echo ($passengerData['gender'] ?? '') === 'Female' ? 'selected' : ''; ?>>Female</option>
+                                    <option value="Other" <?php echo ($passengerData['gender'] ?? '') === 'Other' ? 'selected' : ''; ?>>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileDOB">Date of Birth</label>
+                                <input type="date" id="profileDOB" name="dateOfBirth" value="<?php echo htmlspecialchars($passengerData['date_of_birth'] ?? ''); ?>" disabled>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button type="button" id="editProfileBtn" class="btn btn-secondary">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                            <button type="submit" id="saveProfileBtn" class="btn btn-primary" style="display:none;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="display:none;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
                     </form>
+                </div>
+
+                <!-- Change Password Card -->
+                <div class="password-form-card utility-card">
+                    <h4><i class="fas fa-key"></i> Change Password</h4>
+                    <form id="passwordForm">
+                        <div class="profile-form-vertical">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-key"></i> Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </section>
 

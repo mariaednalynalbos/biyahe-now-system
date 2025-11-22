@@ -56,7 +56,7 @@ try {
             :seat, 
             :contact, 
             CURDATE(), 
-'Pending'
+            'Pending'
         )
     ";
 
