@@ -1,4 +1,4 @@
-# Biyahe Now - Bus Booking System
+# Biyahe Now - Van Booking System
 
 A comprehensive bus booking and management system built with PHP, MySQL, and JavaScript.
 
