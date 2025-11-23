@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: biyahe-now-system
+    env: php
+    buildCommand: echo "No build needed"
+    startCommand: php -S 0.0.0.0:$PORT
+    plan: free

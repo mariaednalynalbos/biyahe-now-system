@@ -30,29 +30,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // CHECK EMAIL
     $stmt = $conn->prepare("SELECT account_id FROM accounts WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
+    $stmt->execute([$email]);
+    
+    if ($stmt->rowCount() > 0) {
         echo json_encode(["status" => "error", "message" => "Email already registered!"]);
         exit;
     }
-    $stmt->close();
 
     // INSERT INTO ACCOUNTS
     $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt_acc = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?)");
-    $stmt_acc->bind_param("sss", $email, $hashed, $role);
-
-    if (!$stmt_acc->execute()) {
-        echo json_encode(["status" => "error", "message" => "Account Insert Error: " . $stmt_acc->error]);
+    $stmt_acc = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?) RETURNING account_id");
+    
+    if (!$stmt_acc->execute([$email, $hashed, $role])) {
+        echo json_encode(["status" => "error", "message" => "Account Insert Error"]);
         exit;
     }
 
-    $new_account_id = $stmt_acc->insert_id;
-    $stmt_acc->close();
+    $new_account_id = $stmt_acc->fetchColumn();
 
     // INSERT INTO PROFILE TABLE
     if ($role === "passenger") {
@@ -64,17 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $stmt_prof = $conn->prepare($sql_profile);
-    $stmt_prof->bind_param("iss", $new_account_id, $lastname, $firstname);
-
-    if (!$stmt_prof->execute()) {
+    
+    if (!$stmt_prof->execute([$new_account_id, $lastname, $firstname])) {
         // rollback account insert
         $conn->query("DELETE FROM accounts WHERE account_id = $new_account_id");
 
-        echo json_encode(["status" => "error", "message" => "Profile Insert Error: " . $stmt_prof->error]);
+        echo json_encode(["status" => "error", "message" => "Profile Insert Error"]);
         exit;
     }
-
-    $stmt_prof->close();
 
     // SET SESSION
     $_SESSION['account_id'] = $new_account_id;

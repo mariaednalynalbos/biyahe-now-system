@@ -11,7 +11,7 @@ $response = ["status" => "error", "message" => "Unexpected error occurred."];
 
 try {
     if (!$conn) {
-        throw new Exception("Database connection failed: " . mysqli_connect_error());
+        throw new Exception("Database connection failed");
     }
 
     if (empty($_POST['email']) || empty($_POST['password'])) {
@@ -19,7 +19,7 @@ try {
     }
 
     $email = strtolower(trim($_POST['email']));
-   $password = trim($_POST['password']);
+    $password = trim($_POST['password']);
    
     // Check accounts table
     $stmt = $conn->prepare(
@@ -28,19 +28,12 @@ try {
          WHERE email = ?"
     );
 
-    if (!$stmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
+    $stmt->execute([$email]);
+    $account = $stmt->fetch();
 
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $accountResult = $stmt->get_result();
-
-    if ($accountResult->num_rows !== 1) {
+    if (!$account) {
         throw new Exception("Email not found.");
     }
-
-    $account = $accountResult->fetch_assoc();
 
     if (!password_verify($password, $account['password'])) {
         throw new Exception("Incorrect password.");
@@ -64,15 +57,12 @@ try {
     }
 
     $pstmt = $conn->prepare($profileSQL);
-    $pstmt->bind_param("i", $account['account_id']);
-    $pstmt->execute();
-    $profileResult = $pstmt->get_result();
+    $pstmt->execute([$account['account_id']]);
+    $profile = $pstmt->fetch();
 
-    if ($profileResult->num_rows !== 1) {
+    if (!$profile) {
         throw new Exception("Profile not found for this account.");
     }
-
-    $profile = $profileResult->fetch_assoc();
 
     // Save all profile fields in session
     foreach ($profile as $key => $value) {

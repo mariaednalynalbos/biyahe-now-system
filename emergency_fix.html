@@ -1,0 +1,80 @@
+<!-- Add this script before </body> tag in your index.html -->
+<script>
+console.log("Emergency JavaScript loaded");
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Fix Login Button
+    const loginBtn = document.getElementById('loginButton');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('authModal').style.display = 'flex';
+            console.log("Login modal opened");
+        });
+    }
+    
+    // Fix Book Button
+    const bookBtn = document.getElementById('formBookButton');
+    if (bookBtn) {
+        bookBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('authModal').style.display = 'flex';
+            console.log("Book modal opened");
+        });
+    }
+    
+    // Fix Close Button
+    const closeBtn = document.getElementById('closeModal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            document.getElementById('authModal').style.display = 'none';
+            console.log("Modal closed");
+        });
+    }
+    
+    // Fix Route Tabs
+    const routeTabs = document.querySelectorAll('.route-tab');
+    const routeContents = document.querySelectorAll('.routes-content');
+    
+    routeTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const targetRoute = this.getAttribute('data-route');
+            
+            routeTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            routeContents.forEach(content => content.classList.remove('active'));
+            const targetContent = document.getElementById(targetRoute + '-routes');
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+    
+    // Fix Form Submissions
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('Php/login_backend.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    alert('Login successful!');
+                    window.location.href = data.redirect;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        });
+    }
+});
+</script>
