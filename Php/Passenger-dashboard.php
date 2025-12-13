@@ -2,60 +2,28 @@
 session_start();
 
 // Redirect to login if not logged in
-if (!isset($_SESSION['account_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../index.html");
     exit;
 }
 
 // Get passenger data from database
-$displayName = 'User';
+$displayName = $_SESSION['name'] ?? 'User';
 $passengerData = [];
 
-// Try to get name from session first
-if (isset($_SESSION['first_name']) && !empty($_SESSION['first_name'])) {
-    $displayName = $_SESSION['first_name'];
-}
-
-if (isset($_SESSION['account_id']) && $_SESSION['role'] === 'passenger') {
-    try {
-        require_once 'db.php';
-        
-        // Get passenger data with user email
-        $sql = "
-            SELECT 
-                p.firstname, p.lastname, p.contact_number, p.address, 
-                p.gender, p.date_of_birth, u.email
-            FROM passengers p
-            LEFT JOIN users u ON p.account_id = u.account_id
-            WHERE p.account_id = ?
-        ";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$_SESSION['account_id']]);
-        $passengerData = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Debug: Check what data we got
-        error_log('Account ID: ' . $_SESSION['account_id']);
-        error_log('Passenger Data: ' . print_r($passengerData, true));
-        
-        if ($passengerData && !empty($passengerData['firstname'])) {
-            $displayName = $passengerData['firstname'];
-            $_SESSION['first_name'] = $passengerData['firstname'];
-            $_SESSION['email'] = $passengerData['email'];
-        } else {
-            // Try users table for basic info
-            $userSql = "SELECT username, email FROM users WHERE account_id = ?";
-            $userStmt = $pdo->prepare($userSql);
-            $userStmt->execute([$_SESSION['account_id']]);
-            $userData = $userStmt->fetch(PDO::FETCH_ASSOC);
-            if ($userData) {
-                $displayName = $userData['username'] ?: 'User';
-                $_SESSION['email'] = $userData['email'];
-                $_SESSION['first_name'] = $displayName;
-            }
-        }
-    } catch (Exception $e) {
-        $displayName = 'Passenger';
-    }
+// Use Supabase data
+if (isset($_SESSION['user_id']) && $_SESSION['role'] === 'passenger') {
+    // Use session data from Supabase login
+    $displayName = $_SESSION['name'] ?? 'Passenger';
+    $passengerData = [
+        'firstname' => explode(' ', $displayName)[0] ?? '',
+        'lastname' => explode(' ', $displayName)[1] ?? '',
+        'email' => $_SESSION['email'] ?? '',
+        'contact_number' => '',
+        'address' => '',
+        'gender' => '',
+        'date_of_birth' => ''
+    ];
 }
 
 
