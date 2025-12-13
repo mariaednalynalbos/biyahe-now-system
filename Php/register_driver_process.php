@@ -1,7 +1,15 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 header('Content-Type: application/json');
 session_start();
-include "supabase_db.php";
+
+try {
+    include "supabase_db.php";
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "message" => "Database connection failed: " . $e->getMessage()]);
+    exit;
+}
 
 $response = ["success" => false, "message" => "Unknown error occurred."];
 
