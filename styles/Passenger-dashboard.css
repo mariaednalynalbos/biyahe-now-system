@@ -277,6 +277,21 @@ body {
     margin-bottom: 1.5rem;
 }
 
+/* Responsive Form Grid */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -780,57 +795,540 @@ body {
 }
 
 
-/* Mobile responsiveness */
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 4px;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    transition: 0.3s;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.mobile-overlay.show {
+    display: block;
+}
+
+/* Comprehensive Mobile Responsive */
+body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+}
+
+/* Mobile Navigation */
 @media (max-width: 768px) {
-    .top-nav-main, .topbar {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .top-nav-main {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100vh;
+        width: 280px;
         flex-direction: column;
-        height: auto;
-        padding: 1rem;
-        gap: 15px;
+        background: var(--gradient-primary);
+        padding: 80px 1rem 1rem;
+        gap: 1rem;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+    
+    .top-nav-main.open {
+        left: 0;
+    }
+    
+    .topbar {
+        display: none;
+    }
+    
+    .logo-section {
+        order: 1;
+    }
+    
+    .dashboard-logo {
+        height: 60px;
+    }
+    
+    .logo-text {
+        font-size: 1.25rem;
     }
     
     .nav-links {
+        order: 2;
         flex-direction: column;
-        gap: 10px;
+        gap: 0.5rem;
+        margin: 0;
         width: 100%;
+        display: flex;
+        list-style: none;
+        padding: 0;
+    }
+    
+
+    
+    .nav-links .nav-link {
+        padding: 1rem;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .nav-links .nav-link:hover,
+    .nav-links .nav-link.active {
+        background: rgba(255,255,255,0.15);
+        transform: none;
+    }
+    
+    .nav-actions {
+        order: 4;
+        gap: 1rem;
+        margin-top: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .user-welcome {
+        font-size: 1rem;
+    }
+    
+    .topbar {
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
+        position: static;
+    }
+    
+    .search-wrap {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .contact-info {
+        font-size: 0.875rem;
         text-align: center;
     }
     
-    .dashboard-grid-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 20px;
+    .page-section {
+        padding: 1.5rem 1rem;
     }
     
-    #bookNowCard, #upcomingTripsCard, #mapCard, #historySummaryCard {
-        grid-column: 1;
-        grid-row: auto;
+    .dashboard-grid-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.5rem;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    
+    #bookNowCard,
+    #upcomingTripsCard,
+    #mapCard,
+    #historySummaryCard {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        order: 1;
+    }
+    
+    #bookNowCard { order: 1; }
+    #upcomingTripsCard { order: 2; }
+    #mapCard { order: 3; }
+    #historySummaryCard { order: 4; }
+    
+    #bookNowCard {
+        width: 100%;
+        max-width: 280px;
+        height: fit-content;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 1rem;
+    }
+    
+    #bookNowCard h3 {
+        margin-bottom: 0.2rem;
+    }
+    
+    #bookNowCard form {
+        margin-top: 0;
+    }
+    
+    .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
     
     .form-grid {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 1rem;
     }
     
     .map-container {
         height: 300px;
+        min-height: 250px;
+    }
+    
+    .utility-card {
+        padding: 1rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    
+    .utility-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    #bookNowCard {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+    }
+    
+    #bookNowCard .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.3rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    #bookNowCard .form-group {
+        margin-bottom: 0.2rem;
+    }
+    
+    #bookNowCard .form-group.full-width {
+        grid-column: span 2;
+    }
+    
+    #bookNowCard .form-group input,
+    #bookNowCard .form-group select {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    #bookNowCard .seat-select-group {
+        margin-bottom: 0.2rem;
+        grid-column: span 2;
+    }
+    
+    #bookNowCard .btn {
+        grid-column: span 2;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        margin-bottom: 0;
+        margin-top: 0.2rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-full,
+    .btn-full-blue {
+        width: 100%;
+    }
+    
+    .support-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .profile-container {
+        max-width: 100%;
+        padding: 0;
     }
     
     .custom-modal {
         width: 95%;
-        margin: 10px;
+        margin: 1rem;
         padding: 1rem;
     }
     
     .van-layout-container {
         flex-direction: column;
-        gap: 15px;
+        gap: 1rem;
+        padding: 1rem;
     }
     
-    .driver-side, .passenger-side {
+    .driver-side,
+    .passenger-side {
         width: 100%;
         flex-direction: row;
         justify-content: space-around;
+        gap: 0.5rem;
+    }
+    
+    .seat {
+        padding: 8px 4px;
+        font-size: 0.8rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .upcoming-trips-table,
+    .history-table {
+        font-size: 0.75rem;
+    }
+    
+    .upcoming-trips-table th,
+    .upcoming-trips-table td,
+    .history-table th,
+    .history-table td {
+        padding: 8px 6px;
+    }
+}
+
+/* Extra Small Mobile (320px) */
+@media (max-width: 320px) {
+    #bookNowCard {
+        width: calc(100vw - 0.5rem);
+        max-width: 240px;
+        height: fit-content;
+        padding: 0.4rem;
+    }
+    
+    #bookNowCard .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.3rem;
+    }
+    
+    #bookNowCard .form-group {
+        margin-bottom: 0.3rem;
+    }
+    
+    #bookNowCard .form-group input,
+    #bookNowCard .form-group select {
+        padding: 0.3rem;
+        font-size: 0.7rem;
+    }
+    
+    #bookNowCard .btn {
+        padding: 0.4rem;
+        font-size: 0.7rem;
+        margin-bottom: 0;
+        margin-top: 0.1rem;
+    }
+    
+    #bookNowCard h3 {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+        margin-top: 0;
+    }
+    
+    #bookNowCard form {
+        margin-top: 0;
+        flex-grow: 1;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .top-nav-main {
+        padding: 0.75rem;
+    }
+    
+    .dashboard-logo {
+        height: 50px;
+    }
+    
+    .logo-text {
+        font-size: 1rem;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.25rem;
+    }
+    
+    .nav-links .nav-link {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .user-welcome {
+        font-size: 0.875rem;
+    }
+    
+    .page-section {
+        padding: 1rem 0.5rem;
+    }
+    
+    .dashboard-grid-container {
+        padding: 0.5rem;
+        gap: 1rem;
+        width: 100%;
+        max-width: 100vw;
+    }
+    
+    .utility-card {
+        padding: 0.75rem;
+        margin: 0;
+        width: 100%;
+        max-width: calc(100vw - 1rem);
+    }
+    
+    #bookNowCard {
+        width: calc(100vw - 1rem);
+        max-width: 250px;
+        height: fit-content;
+        margin: 0 auto;
+        padding: 0.5rem;
+        overflow: visible;
+    }
+    
+    #bookNowCard .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.4rem;
+    }
+    
+    #bookNowCard .form-group {
+        margin-bottom: 0.4rem;
+    }
+    
+    #bookNowCard .form-group label {
+        font-size: 0.75rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    #bookNowCard .form-group input,
+    #bookNowCard .form-group select {
+        padding: 0.4rem;
+        font-size: 0.75rem;
+    }
+    
+    #bookNowCard .btn {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        margin-bottom: 0;
+        margin-top: 0.2rem;
+    }
+    
+    .utility-card h3 {
+        font-size: 1.125rem;
+    }
+    
+    .form-grid {
+        gap: 0.75rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8rem;
+    }
+    
+    .map-container {
+        height: 250px;
+    }
+    
+    .custom-modal {
+        width: 98%;
+        margin: 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .seat {
+        padding: 6px 3px;
+        font-size: 0.75rem;
+    }
+    
+    .upcoming-trips-table,
+    .history-table {
+        font-size: 0.7rem;
+        min-width: 100%;
+    }
+    
+    .upcoming-trips-table th,
+    .upcoming-trips-table td,
+    .history-table th,
+    .history-table td {
+        padding: 6px 4px;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .profile-avatar {
+        font-size: 48px;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+    }
+    
+    .profile-actions .btn {
+        width: 100%;
     }
 }
 
@@ -1429,4 +1927,208 @@ body {
     .profile-actions .btn {
         width: 100%;
     }
+}
+/* Enhanced Booking Form Responsiveness */
+#bookNowFormGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 1rem;
+}
+
+/* Full width elements span both columns */
+#bookNowFormGrid .full-width {
+    grid-column: span 2;
+}
+
+/* Tablet responsive */
+@media (max-width: 1024px) and (min-width: 769px) {
+    #bookNowFormGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+/* Mobile responsive - single column */
+@media (max-width: 768px) {
+    #bookNowFormGrid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    #bookNowFormGrid .full-width {
+        grid-column: span 1;
+    }
+    
+    #bookNowFormGrid .form-group {
+        margin-bottom: 12px;
+    }
+    
+    #bookNowFormGrid input,
+    #bookNowFormGrid select {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+    #bookNowFormGrid {
+        gap: 8px;
+    }
+    
+    #bookNowFormGrid input,
+    #bookNowFormGrid select {
+        padding: 8px;
+        font-size: 13px;
+    }
+}
+/* Complete Mobile Responsiveness */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .top-nav-main {
+        min-height: 50px;
+        padding: 0.5rem;
+    }
+    
+    .topbar {
+        padding: 0.5rem;
+        height: auto;
+        min-height: 40px;
+    }
+    
+    .search-wrap {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    #search {
+        padding: 0.5rem;
+        font-size: 12px;
+    }
+    
+    .contact-info {
+        font-size: 10px;
+        text-align: center;
+    }
+    
+    .page-section {
+        padding: 0.5rem;
+    }
+    
+    .dashboard-grid-container {
+        padding: 0.25rem;
+        gap: 0.75rem;
+    }
+    
+    .utility-card {
+        padding: 0.75rem;
+        margin: 0;
+    }
+    
+    .utility-card h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 11px;
+    }
+    
+    .upcoming-trips-table th,
+    .upcoming-trips-table td {
+        padding: 4px 2px;
+        font-size: 10px;
+    }
+    
+    .map-container {
+        height: 200px;
+        min-height: 150px;
+    }
+    
+    .btn {
+        padding: 0.5rem;
+        font-size: 12px;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 0.5rem;
+        font-size: 12px;
+    }
+    
+    .form-group label {
+        font-size: 11px;
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Ultra Small Mobile */
+@media (max-width: 320px) {
+    .dashboard-grid-container {
+        padding: 0.125rem;
+        gap: 0.5rem;
+    }
+    
+    .utility-card {
+        padding: 0.5rem;
+    }
+    
+    .utility-card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .upcoming-trips-table {
+        font-size: 9px;
+    }
+    
+    .map-container {
+        height: 150px;
+    }
+    
+    .btn {
+        padding: 0.4rem;
+        font-size: 11px;
+    }
+}
+/* Universal Responsive Layout */
+@media (max-width: 1200px) {
+    .dashboard-grid-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    #bookNowCard { grid-column: 1; grid-row: 1; }
+    #mapCard { grid-column: 2; grid-row: 1; }
+    #upcomingTripsCard { grid-column: 1 / 3; grid-row: 2; }
+    #historySummaryCard { grid-column: 1 / 3; grid-row: 3; }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .page-section { padding: 10px; }
+    .support-grid { grid-template-columns: 1fr; }
+    .profile-header { flex-direction: column; text-align: center; }
+    .profile-actions { flex-direction: column; }
+    .profile-actions .btn { width: 100%; margin-bottom: 10px; }
+}
+
+@media (max-width: 480px) {
+    .utility-card { padding: 10px; }
+    .utility-card h3 { font-size: 1rem; }
+    .btn { padding: 8px; font-size: 12px; }
+    .form-group input, .form-group select { padding: 8px; font-size: 12px; }
+    .map-container { height: 200px; }
+    .upcoming-trips-table { font-size: 10px; }
+    .upcoming-trips-table th, .upcoming-trips-table td { padding: 4px 2px; }
 }

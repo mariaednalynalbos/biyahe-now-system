@@ -59,14 +59,18 @@ if ($resultInactiveDrivers) {
 </head>
 <body class="flex min-h-screen">
 
-    <button id="mobileMenuToggle" class="fixed top-4 left-4 z-50 bg-secondary p-3 rounded-lg text-white md:hidden">
-        ☰
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenuToggle" class="mobile-menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open'); document.getElementById('mobileOverlay').classList.toggle('show'); this.classList.toggle('active');">
+        <span></span>
+        <span></span>
+        <span></span>
     </button>
     
-    <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="mobile-overlay"></div>
 
     <!-- Sidebar -->
-    <div class="sidebar flex flex-col items-center py-6" id="sidebar">
+    <div class="sidebar" id="sidebar">
 
     <!-- Sidebar Logo -->
     <img src="../images/logo.png" class="w-28 h-28 -mt-4 mb-1">
@@ -74,7 +78,7 @@ if ($resultInactiveDrivers) {
     <h1 class="text-xl font-bold text-white -mt-1 mb-6">Biyahe Now</h1>
         <nav>
             <a href="#" id="nav-dashboard" class="active"><span class="mr-2">🏠</span> Dashboard</a>
-            <a href="#" id="nav-routes"><span class="mr-2">🛣️</span> Routes Management</a>
+            <a href="#" id="nav-routes"><span class="mr-2">🛣️</span> Route Management</a>
             <a href="#" id="nav-drivers"><span class="mr-2">🚗</span> Drivers</a>
             <a href="#" id="nav-reports"><span class="mr-2">📊</span> Reports</a>
             <a href="#" id="nav-logout"><span class="mr-2">🚪</span> Logout</a>
@@ -89,7 +93,7 @@ if ($resultInactiveDrivers) {
             <header class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-semibold">Welcome, <span id="adminName"><?php echo htmlspecialchars($displayName); ?>!</span> </h2>
                 <h3 class="text-3xl font-semibold">Today's Operations</h3>
-                <div class="flex space-x-4">
+                <div class="desktop-actions">
                     <!-- New Registration Buttons -->
                     <button id="registerAdminBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition">
                         Register New Admin
@@ -99,7 +103,12 @@ if ($resultInactiveDrivers) {
                     </button>
                     <!-- Search placeholder -->
                     <div class="search-wrap relative">
+                        <button class="mobile-search-icon" onclick="var box = document.getElementById('mobileSearchBox'); box.style.display = 'flex'; document.getElementById('mobileSearchInput').focus();">🔍</button>
                         <input type="text" id="search" placeholder="Search passenger/driver" class="bg-secondary p-2 rounded-lg text-sm text-light border border-[#4a505b]">
+                        <div id="mobileSearchBox" class="mobile-search-box">
+                            <input type="text" id="mobileSearchInput" placeholder="Search...">
+                            <button onclick="document.getElementById('mobileSearchBox').style.display = 'none';">✕</button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -128,7 +137,7 @@ if ($resultInactiveDrivers) {
             <!-- Bookings Grid -->
             <div class="admin-panel">
                 <h3 class="text-xl font-semibold mb-4">Today's Departure Schedule</h3>
-                <div id="bookingsGrid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div id="bookingsGrid" class="bookings-grid">
                     <!-- Booking Cards will be rendered here by JS -->
                 </div>
             </div>

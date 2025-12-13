@@ -19,7 +19,7 @@ if ($_SESSION['role'] !== 'driver') {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Driver Dashboard - Biyahe Now</title>
 
   <!-- CSS -->
@@ -45,11 +45,13 @@ if ($_SESSION['role'] !== 'driver') {
 <body class="antialiased flex">
 
   <!-- Sidebar -->
-  <button id="mobileMenuToggle" class="fixed top-4 left-4 z-50 bg-card p-2 rounded-lg text-white md:hidden">
-    ☰
+  <button id="mobileMenuToggle" class="mobile-menu-toggle" onclick="var sidebar = document.getElementById('sidebar'); var overlay = document.getElementById('mobileOverlay'); var isOpen = sidebar.style.left === '0px'; sidebar.style.left = isOpen ? '-250px' : '0px'; overlay.style.display = isOpen ? 'none' : 'block'; this.classList.toggle('active', !isOpen);">
+    <span></span>
+    <span></span>
+    <span></span>
   </button>
   
-  <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+  <div id="mobileOverlay" class="mobile-overlay" onclick="document.getElementById('sidebar').style.left = '-250px'; this.style.display = 'none'; document.getElementById('mobileMenuToggle').classList.remove('active');"></div>
   
   <nav class="sidebar" id="sidebar">
     <h2 class="text-3xl font-extrabold mb-8 text-highlight p-1">Biyahe<span class="text-white">Now</span></h2>
@@ -259,26 +261,26 @@ if ($_SESSION['role'] !== 'driver') {
   <!-- Profile Modal -->
 
 <div id="profileModal" class="custom-modal-overlay flex items-center justify-center" style="display:none;">
-    <div class="custom-modal bg-gray-800 text-white rounded-xl shadow-lg w-full max-w-xl p-6 relative"> 
+    <div class="profile-modal-container"> 
         
-        <div class="flex justify-between items-start mb-4">
-            <h3 class="text-2xl font-semibold">My Profile</h3>
-            <div>
-            <button id="editProfileBtn" class="px-4 py-1.5 bg-[var(--highlight)] rounded text-white text-sm">Edit</button>
-            <button id="saveProfileBtn" class="px-4 py-1.5 bg-green-500 rounded text-white hidden text-sm">Save Changes</button>
+        <div class="profile-header">
+            <h3 class="profile-title">My Profile</h3>
+            <div class="profile-buttons">
+            <button id="editProfileBtn" class="profile-btn edit-btn">Edit</button>
+            <button id="saveProfileBtn" class="profile-btn save-btn hidden">Save Changes</button>
         </div>
         </div>
         
-        <div class="flex items-center gap-4 mb-6">
-            <img id="profilePicDisplay" src="https://via.placeholder.com/80" alt="Profile Pic" class="w-20 h-20 rounded-full object-cover">
-            <div>
-                <div class="text-xl font-bold" id="profileNameDisplay">Driver Name</div>
-                <div class="text-sm" style="color:var(--muted)" id="profileEmailDisplay">driver@example.com</div>
+        <div class="profile-info">
+            <img id="profilePicDisplay" src="https://via.placeholder.com/80" alt="Profile Pic" class="profile-pic">
+            <div class="profile-details">
+                <div class="profile-name" id="profileNameDisplay">Driver Name</div>
+                <div class="profile-email" id="profileEmailDisplay">driver@example.com</div>
             </div>
         </div>
 
-        <form id="driverProfileForm" class="space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+        <form id="driverProfileForm" class="profile-form">
+            <div class="profile-grid">
                 
                 <div>
                     <label class="text-xs font-semibold block mb-0.5">Address</label>

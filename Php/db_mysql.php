@@ -1,10 +1,10 @@
 <?php
-// Database Configuration
-$host = $_ENV['DB_HOST'] ?? 'localhost';
-$db = $_ENV['DB_NAME'] ?? 'biyahe_now';
-$user = $_ENV['DB_USER'] ?? 'root';
-$pass = $_ENV['DB_PASS'] ?? '';
-$port = $_ENV['DB_PORT'] ?? '3306';
+// MySQL Database Configuration for XAMPP
+$host = 'localhost';
+$db = 'biyahe_now';
+$user = 'root';
+$pass = '';
+$port = '3306';
 
 // PDO MySQL connection
 $charset = 'utf8mb4';
@@ -22,3 +22,4 @@ try {
     error_log("PDO Connection Error: " . $e->getMessage());
     die("Database connection failed: " . $e->getMessage());
 }
+?>

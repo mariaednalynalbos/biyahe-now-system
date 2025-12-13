@@ -1,35 +1,17 @@
-# Environment files
-.env
-.env.local
-.env.production
-
-# Database backups
-*.sql
-*.db
-
-# Logs
 *.log
-error_log
-
-# Temporary files
 *.tmp
-*.temp
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
+*.cache
+/vendor/
 .DS_Store
 Thumbs.db
-
-# Large media files (use Git LFS if needed)
 *.mp4
 *.avi
 *.mov
 *.wmv
-
-# Sensitive configuration
-config.local.php
+*.flv
+*.mkv
+images/*.mp4
+images/*.avi
+images/*.mov
+node_modules/
+.env

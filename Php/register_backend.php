@@ -40,14 +40,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // INSERT INTO ACCOUNTS
     $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt_acc = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?) RETURNING account_id");
+    $stmt_acc = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?)");
     
     if (!$stmt_acc->execute([$email, $hashed, $role])) {
         echo json_encode(["status" => "error", "message" => "Account Insert Error"]);
         exit;
     }
 
-    $new_account_id = $stmt_acc->fetchColumn();
+    $new_account_id = $conn->lastInsertId();
 
     // INSERT INTO PROFILE TABLE
     if ($role === "passenger") {

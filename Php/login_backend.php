@@ -20,6 +20,9 @@ try {
 
     $email = strtolower(trim($_POST['email']));
     $password = trim($_POST['password']);
+    
+    // Debug: Log login attempt
+    error_log("Login attempt for email: $email");
    
     // Check accounts table
     $stmt = $conn->prepare(
@@ -35,7 +38,19 @@ try {
         throw new Exception("Email not found.");
     }
 
-    if (!password_verify($password, $account['password'])) {
+    // Check password - handle both hashed and plain text (for debugging)
+    $passwordValid = false;
+    
+    if (password_verify($password, $account['password'])) {
+        $passwordValid = true;
+    } elseif ($password === $account['password']) {
+        // Temporary: Allow plain text passwords (will be fixed by fix script)
+        $passwordValid = true;
+        error_log("WARNING: Plain text password detected for $email");
+    }
+    
+    if (!$passwordValid) {
+        error_log("Password verification failed for $email");
         throw new Exception("Incorrect password.");
     }
 

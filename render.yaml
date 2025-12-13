@@ -1,7 +1,32 @@
 services:
   - type: web
-    name: biyahe-now-system
+    name: biyahe-now
     env: php
-    buildCommand: echo "No build needed"
-    startCommand: php -S 0.0.0.0:$PORT
-    plan: free
+    buildCommand: composer install
+    startCommand: php -S 0.0.0.0:$PORT -t .
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: biyahe-db
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: biyahe-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: biyahe-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: biyahe-db
+          property: password
+      - key: DB_PORT
+        fromDatabase:
+          name: biyahe-db
+          property: port
+
+databases:
+  - name: biyahe-db
+    databaseName: biyahe_now
+    user: biyahe_user

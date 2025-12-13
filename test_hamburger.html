@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #2b384d;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 50px;
+            height: 50px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            height: 100vh;
+            width: 250px;
+            background: #2b384d;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .sidebar.open {
+            left: 0;
+        }
+        
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <button id="mobileMenuToggle" class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <div id="sidebar" class="sidebar">
+        <a href="#">Dashboard</a>
+        <a href="#">Route Management</a>
+        <a href="#">Drivers</a>
+        <a href="#">Reports</a>
+        <a href="#">Logout</a>
+    </div>
+    
+    <script>
+        document.getElementById('mobileMenuToggle').onclick = function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        };
+    </script>
+</body>
+</html>

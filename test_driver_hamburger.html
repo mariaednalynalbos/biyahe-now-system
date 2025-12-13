@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; background: #1a202c; color: white; font-family: Arial; }
+        
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1002;
+            background: rgba(45, 55, 72, 0.9);
+            border: 2px solid #4299E1;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 50px;
+            height: 50px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: -220px;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            background: #2D3748;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 2rem;
+        }
+        
+        .sidebar.open {
+            left: 0;
+        }
+        
+        .sidebar h2 {
+            color: #4299E1;
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar a {
+            display: block;
+            padding: 1rem 0.75rem;
+            color: #A0AEC0;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(66,153,225,0.15);
+            color: #4299E1;
+        }
+        
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .mobile-overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button id="mobileMenuToggle" class="mobile-menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <div id="mobileOverlay" class="mobile-overlay" onclick="closeMenu()"></div>
+    
+    <nav class="sidebar" id="sidebar">
+        <h2>Biyahe<span style="color:white;">Now</span></h2>
+        <ul>
+            <li><a href="#" class="active">Dashboard</a></li>
+            <li><a href="#">My Schedule</a></li>
+            <li><a href="#">Earnings</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#" style="color:#f56565;">Logout</a></li>
+        </ul>
+    </nav>
+    
+    <div style="padding: 100px 20px; margin-left: 0;">
+        <h1 style="color: white; font-size: 2rem;">Driver Dashboard Test</h1>
+        <p style="color: #A0AEC0;">Click the hamburger menu to see navigation items.</p>
+    </div>
+    
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const toggle = document.getElementById('mobileMenuToggle');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+            toggle.classList.toggle('active');
+        }
+        
+        function closeMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            const toggle = document.getElementById('mobileMenuToggle');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+            toggle.classList.remove('active');
+        }
+    </script>
+</body>
+</html>

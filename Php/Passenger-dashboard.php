@@ -74,7 +74,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Passenger Dashboard - Biyahe Now</title>
 
     <link rel="stylesheet" href="../styles/Passenger-dashboard.css">
@@ -86,7 +86,17 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
     </head>
 <body>
     
-    <nav class="top-nav-main">
+    <!-- Mobile Menu Toggle -->
+    <button id="mobileMenuToggle" class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="mobile-overlay"></div>
+    
+    <nav class="top-nav-main" id="topNav">
         <div class="logo-section">
             <a href="#dashboard" class="logo-link">
                 <img src="../images/logo.png" alt="Biyahe Now Logo" class="dashboard-logo">
@@ -412,5 +422,6 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
     <div id="toast" class="toast"></div>
 
     <script src="../scripts/Passenger-dashboard.js"></script>
+    <script src="../scripts/passenger-mobile.js"></script>
 </body>
 </html>
