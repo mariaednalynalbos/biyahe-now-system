@@ -257,8 +257,8 @@ if (registerFormElement) {
         const formData = new FormData(this);
         
         try {
-            // Tiyakin na TAMA ang path: 'Php/register_backend.php'
-            const response = await fetch("Php/register_backend.php", {
+            // Using Supabase API backend
+            const response = await fetch("Php/register_supabase.php", {
                 method: "POST",
                 body: formData
             });
@@ -306,7 +306,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   e.preventDefault();
 
   const formData = new FormData(this);
-  const response = await fetch('Php/login_backend.php', 
+  const response = await fetch('Php/login_supabase.php', 
     { method: "POST", body: formData });
   const data = await response.json();
 
