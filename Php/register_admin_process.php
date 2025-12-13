@@ -47,13 +47,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $full_name = $firstname . ' ' . $lastname;
 
         $userData = [
-            'name' => $full_name,
+            'first_name' => $firstname,
+            'last_name' => $lastname,
             'email' => $email,
             'password' => $hashed,
             'user_type' => 'admin',
-            'contact' => $contact,
+            'contact_number' => $contact,
             'position' => $position,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d\TH:i:s\Z')
         ];
 
         $result = supabaseQuery('users', 'POST', $userData);
@@ -69,7 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
     } catch (Exception $e) {
-        $response['message'] = "Error: " . $e->getMessage();
+        error_log("Admin Registration Error: " . $e->getMessage());
+        $response['message'] = "Registration failed: " . $e->getMessage();
     }
 
 } else {
