@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /images/
+Allow: /styles/
+Allow: /scripts/
+
+# Disallow private/admin areas
+Disallow: /Php/Admin-dashboard.php
+Disallow: /Php/register_*
+Disallow: /Php/login_*
+Disallow: /debug_*
+Disallow: /test_*
+Disallow: /add_admin.php
+Disallow: /delete_user.php
+Disallow: /fix_admin.php
+
+# Sitemap location
+Sitemap: https://biyahe-now-system.onrender.com/sitemap.xml
