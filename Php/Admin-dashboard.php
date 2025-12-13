@@ -1,46 +1,40 @@
 <?php
 session_start();
 
-// 1. DATABASE CONNECTION (ASSUMPTION: config.php is here)
-// Make sure this path is correct relative to this file
-include_once('config.php'); 
+// Use Supabase connection
+include_once('supabase_db.php'); 
 
 // Redirect to login if not logged in
-if (!isset($_SESSION['account_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../index.html");
     exit;
 }
-$displayName = $_SESSION['first_name'] ?? 'Admin';
+$displayName = $_SESSION['name'] ?? 'Admin';
 
-// Optional: check if the logged-in user has the right role
+// Check if the logged-in user has admin role
 if ($_SESSION['role'] !== 'admin') {
-    echo "<script>alert('Access denied. admin only.'); window.location.href='../index.html';</script>";
+    echo "<script>alert('Access denied. Admin only.'); window.location.href='../index.html';</script>";
     exit;
 }
-if (isset($_SESSION['first_name'])) {
-    $adminName = htmlspecialchars($_SESSION['first_name']);
-}
 
+// Fetch Dashboard Counts using Supabase
+$totalUsers = 0; $activeDrivers = 0; $inactiveDrivers = 0;
 
-// Optional: Fetch Dashboard Counts (Placeholder logic, needs real database query)
-// Using live counts now
-$totalUsers = 0; $activeDrivers = 0; $inactiveDrivers = 0; $totalPassengersToday = 'N/A';
-
-// Get total registered users (assuming 'users' table exists)
-$resultUsers = $conn->query("SELECT COUNT(*) AS total FROM users");
-if ($resultUsers) {
-    $totalUsers = $resultUsers->fetch_assoc()['total'];
-}
-
-// Get active/inactive drivers (assuming 'status' column in drivers table)
-$resultActiveDrivers = $conn->query("SELECT COUNT(*) AS active FROM users WHERE role = 'driver'");
-if ($resultActiveDrivers) {
-    $activeDrivers = $resultActiveDrivers->fetch_assoc()['active'];
-}
-
-$resultInactiveDrivers = $conn->query("SELECT COUNT(*) AS inactive FROM users WHERE role = 'driver'");
-if ($resultInactiveDrivers) {
-    $inactiveDrivers = $resultInactiveDrivers->fetch_assoc()['inactive'];
+try {
+    // Get total users
+    $users = supabaseQuery('users', 'GET');
+    $totalUsers = count($users);
+    
+    // Count drivers
+    $drivers = array_filter($users, function($user) {
+        return $user['user_type'] === 'driver';
+    });
+    $activeDrivers = count($drivers);
+    $inactiveDrivers = 0; // Placeholder
+    
+} catch (Exception $e) {
+    // Handle error silently for now
+    error_log("Dashboard stats error: " . $e->getMessage());
 }
 ?>
 
