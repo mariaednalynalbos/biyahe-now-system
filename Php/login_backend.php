@@ -24,10 +24,10 @@ try {
     // Debug: Log login attempt
     error_log("Login attempt for email: $email");
    
-    // Check accounts table
+    // Check users table
     $stmt = $conn->prepare(
-        "SELECT account_id, email, password, role 
-         FROM accounts 
+        "SELECT id, name, email, password, user_type 
+         FROM users 
          WHERE email = ?"
     );
 
@@ -55,69 +55,25 @@ try {
     }
 
     // Save basic session data
-    $_SESSION['account_id'] = $account['account_id'];
+    $_SESSION['user_id'] = $account['id'];
     $_SESSION['email'] = $account['email'];
-    $_SESSION['role'] = $account['role'];
+    $_SESSION['role'] = $account['user_type'];
     $_SESSION['logged_in'] = true;
-
-    // Load profile based on role
-    if ($account['role'] === 'driver') {
-        $profileSQL = "SELECT * FROM drivers WHERE account_id = ?";
-    } 
-    elseif ($account['role'] === 'passenger') {
-        $profileSQL = "SELECT * FROM passengers WHERE account_id = ?";
-    } 
-    else {
-        $profileSQL = "SELECT * FROM admins WHERE account_id = ?";
-    }
-
-    $pstmt = $conn->prepare($profileSQL);
-    $pstmt->execute([$account['account_id']]);
-    $profile = $pstmt->fetch();
-
-    if (!$profile) {
-        throw new Exception("Profile not found for this account.");
-    }
-
-    // Save all profile fields in session
-    foreach ($profile as $key => $value) {
-        $_SESSION[$key] = $value;
-    }
-
-    // 🔥 UNIVERSAL NAME DETECTION FIX
-    $possibleFirstNames = ['firstname', 'first_name', 'fname', 'name'];
-    $possibleLastNames  = ['lastname', 'last_name', 'lname'];
-
-    $_SESSION['first_name'] = '';
-    $_SESSION['last_name'] = '';
-
-    foreach ($possibleFirstNames as $field) {
-        if (!empty($profile[$field])) {
-            $_SESSION['first_name'] = $profile[$field];
-            break;
-        }
-    }
-
-    foreach ($possibleLastNames as $field) {
-        if (!empty($profile[$field])) {
-            $_SESSION['last_name'] = $profile[$field];
-            break;
-        }
-    }
+    $_SESSION['name'] = $account['name'] ?? '';
 
     // Redirect based on role
-   if ($account['role'] === 'driver') {
-        $redirect = "Php/Driver-dashboard.php";
-    } elseif ($account['role'] === 'passenger') {
-        $redirect = "Php/Passenger-dashboard.php";
+    if ($account['user_type'] === 'driver') {
+        $redirect = "dashboard.html";
+    } elseif ($account['user_type'] === 'passenger') {
+        $redirect = "passenger-dashboard.html";
     } else {
-        $redirect = "Php/Admin-dashboard.php";
+        $redirect = "admin-dashboard.html";
     }
 
     $response = [
         "status" => "success",
         "message" => "Login successful!",
-        "role" => $account['role'],
+        "role" => $account['user_type'],
         "redirect" => $redirect
     ];
 
