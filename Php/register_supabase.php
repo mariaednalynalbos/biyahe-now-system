@@ -45,7 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             'name' => $full_name,
             'email' => $email,
             'password' => $hashed,
-            'user_type' => $role
+            'user_type' => $role,
+            'created_at' => date('Y-m-d H:i:s')
         ];
 
         $result = supabaseQuery('users', 'POST', $userData);
@@ -61,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['email'] = $email;
         $_SESSION['role'] = $role;
         $_SESSION['name'] = $full_name;
+        $_SESSION['logged_in'] = true;
 
         // REDIRECT
         if ($role === 'driver') {

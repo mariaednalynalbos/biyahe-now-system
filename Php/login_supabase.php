@@ -15,7 +15,11 @@ try {
     
     // GET USER
     $users = supabaseQuery('users', 'GET', null, 'email=eq.' . urlencode($email));
-
+    
+    // Debug logging
+    error_log("Login attempt for email: " . $email);
+    error_log("Users found: " . count($users));
+    
     if (empty($users)) {
         throw new Exception("Email not found.");
     }

@@ -418,13 +418,15 @@
         <label for="confirmPassword">Confirm Password</label>
         <input type="password" name="confirm_password" id="confirmPassword" required>
 
+        <label for="roleSelect">Register as</label>
+        <select name="role" id="roleSelect" required>
+            <option value="passenger" selected>Passenger</option>
+            <option value="driver">Driver</option>
+            <option value="admin">Admin</option>
+        </select>
 
         <!-- ✅ Add the alert container here -->
         <div id="alertBox" class="alert-box" style="display:none;"></div>
-
-    <!-- ✅ Role selection should be INSIDE the form -->
-
-    <input type="hidden" name="role" id="roleInput" value="passenger">
 
 
     <!-- ✅ Register button below roles -->
