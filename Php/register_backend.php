@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // CHECK EMAIL
-    $stmt = $conn->prepare("SELECT account_id FROM accounts WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     
     if ($stmt->rowCount() > 0) {
@@ -37,53 +37,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // INSERT INTO ACCOUNTS
+    // INSERT INTO USERS
     $hashed = password_hash($password, PASSWORD_DEFAULT);
+    $full_name = $firstname . ' ' . $lastname;
 
-    $stmt_acc = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?)");
+    $stmt_acc = $conn->prepare("INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, ?)");
     
-    if (!$stmt_acc->execute([$email, $hashed, $role])) {
-        echo json_encode(["status" => "error", "message" => "Account Insert Error"]);
+    if (!$stmt_acc->execute([$full_name, $email, $hashed, $role])) {
+        echo json_encode(["status" => "error", "message" => "Registration failed"]);
         exit;
     }
 
-    $new_account_id = $conn->lastInsertId();
-
-    // INSERT INTO PROFILE TABLE
-    if ($role === "passenger") {
-        $sql_profile = "INSERT INTO passengers (account_id, lastname, firstname) VALUES (?, ?, ?)";
-    } elseif ($role === "driver") {
-        $sql_profile = "INSERT INTO drivers (account_id, lastname, firstname) VALUES (?, ?, ?)";
-    } else {
-        $sql_profile = "INSERT INTO admins (account_id, lastname, firstname) VALUES (?, ?, ?)";
-    }
-
-    $stmt_prof = $conn->prepare($sql_profile);
-    
-    if (!$stmt_prof->execute([$new_account_id, $lastname, $firstname])) {
-        // rollback account insert
-        $conn->query("DELETE FROM accounts WHERE account_id = $new_account_id");
-
-        echo json_encode(["status" => "error", "message" => "Profile Insert Error"]);
-        exit;
-    }
+    $new_user_id = $conn->lastInsertId();
 
     // SET SESSION
-    $_SESSION['account_id'] = $new_account_id;
+    $_SESSION['user_id'] = $new_user_id;
     $_SESSION['email'] = $email;
-    $_SESSION['role']  = $role;
-    $_SESSION['first_name'] = $firstname;
+    $_SESSION['role'] = $role;
+    $_SESSION['name'] = $full_name;
     
     // 🔥 FIX: I-DEFINE ANG $redirect VARIABLE BAGO GAMITIN
     if ($role === 'driver') {
-        // Tiyakin na ang file name ay Driver-dashboard.php (Capital D)
-        $redirect = "Php/Driver-dashboard.php";
+        $redirect = "dashboard.html";
     } elseif ($role === 'passenger') {
-        // Tiyakin na ang file name ay Passenger-dashboard.php (Capital P)
-        $redirect = "Php/Passenger-dashboard.php";
+        $redirect = "passenger-dashboard.html";
     } else { // admin
-        // Tiyakin na ang file name ay Admin-dashboard.php (Capital A)
-        $redirect = "Php/Admin-dashboard.php";
+        $redirect = "admin-dashboard.html";
     }
 
 
