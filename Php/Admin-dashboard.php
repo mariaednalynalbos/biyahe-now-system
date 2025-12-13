@@ -428,8 +428,8 @@ try {
         </div>
     </div>
 
-<script src="/Biyahe/scripts/Admin-dashboard.js"></script>
-<script src="/Biyahe/scripts/registration_handler.js"></script>
+<script src="../scripts/Admin-dashboard.js"></script>
+<script src="../scripts/registration_handler.js"></script>
 
 </body>
 </html>
