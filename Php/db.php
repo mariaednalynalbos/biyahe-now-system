@@ -1,21 +1,14 @@
 <?php
 // Database Configuration
-if (isset($_ENV['DATABASE_URL'])) {
-    // Production (Render)
-    $url = parse_url($_ENV['DATABASE_URL']);
-    $host = $url['host'];
-    $db = ltrim($url['path'], '/');
-    $user = $url['user'];
-    $pass = $url['pass'];
-    $port = $url['port'];
+$host = $_ENV['DB_HOST'] ?? 'localhost';
+$db = $_ENV['DB_NAME'] ?? 'biyahe_now';
+$user = $_ENV['DB_USER'] ?? 'root';
+$pass = $_ENV['DB_PASS'] ?? '';
+$port = $_ENV['DB_PORT'] ?? '3306';
+
+if (isset($_ENV['DB_HOST'])) {
     $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 } else {
-    // Local development
-    $host = 'localhost';
-    $db = 'biyahe_now';
-    $user = 'root';
-    $pass = '';
-    $port = '3306';
     $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
 }
 
