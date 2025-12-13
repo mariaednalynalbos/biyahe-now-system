@@ -1,69 +1,80 @@
 <?php
-error_reporting(0);
-ini_set('display_errors', 0);
-
 header('Content-Type: application/json');
+session_start();
+include "supabase_db.php";
 
-$response = ['success' => false, 'message' => ''];
+$response = ["success" => false, "message" => "Unknown error occurred."];
 
-// Simple database connection
-$conn = new mysqli("localhost", "root", "", "biyahe_now");
-
-if ($conn->connect_error) {
-    $response['message'] = 'Database connection failed';
-    echo json_encode($response);
-    exit;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    
     $lastname = trim($_POST['lastName'] ?? '');
     $firstname = trim($_POST['firstName'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
-    $role = 'admin';
+    $confirm = $_POST['confirmPassword'] ?? '';
+    $contact = trim($_POST['contactNumber'] ?? '');
+    $position = trim($_POST['position'] ?? '');
+    $adminCode = trim($_POST['adminCode'] ?? '');
 
-    if (empty($email) || empty($password) || empty($lastname) || empty($firstname)) {
-        $response['message'] = 'All required fields must be filled';
+    // Basic validation
+    $errors = [];
+    if (empty($lastname) || empty($firstname)) $errors[] = "Name is required.";
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email.";
+    if (strlen($password) < 6) $errors[] = "Password must be at least 6 characters.";
+    if ($password !== $confirm) $errors[] = "Passwords do not match.";
+    if (empty($contact)) $errors[] = "Contact number is required.";
+    if (empty($position)) $errors[] = "Position is required.";
+    if ($adminCode !== 'ADMIN2024') $errors[] = "Invalid admin code.";
+
+    if (!empty($errors)) {
+        $response['message'] = implode(" ", $errors);
         echo json_encode($response);
         exit;
     }
 
-    // Check if email exists
-    $stmt = $conn->prepare("SELECT account_id FROM accounts WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $response['message'] = 'Email already registered';
-        echo json_encode($response);
-        exit;
-    }
-
-    // Insert into accounts
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare("INSERT INTO accounts (email, password, role) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $email, $hashed_password, $role);
-
-    if ($stmt->execute()) {
-        $account_id = $conn->insert_id;
+    try {
+        // Check if email exists
+        $existing = supabaseQuery('users', 'GET', null, 'email=eq.' . urlencode($email));
         
-        // Insert into admins table
-        $stmt2 = $conn->prepare("INSERT INTO admins (account_id, firstname, lastname) VALUES (?, ?, ?)");
-        $stmt2->bind_param("iss", $account_id, $firstname, $lastname);
-        
-        if ($stmt2->execute()) {
-            $response['success'] = true;
-            $response['message'] = 'Admin registered successfully!';
-        } else {
-            $conn->query("DELETE FROM accounts WHERE account_id = $account_id");
-            $response['message'] = 'Failed to create admin profile';
+        if (!empty($existing)) {
+            $response['message'] = "Email already registered!";
+            echo json_encode($response);
+            exit;
         }
-    } else {
-        $response['message'] = 'Failed to create account';
+
+        // Create admin account
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $full_name = $firstname . ' ' . $lastname;
+
+        $userData = [
+            'name' => $full_name,
+            'email' => $email,
+            'password' => $hashed,
+            'user_type' => 'admin',
+            'contact' => $contact,
+            'position' => $position,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $result = supabaseQuery('users', 'POST', $userData);
+
+        if (!empty($result)) {
+            $response = [
+                "success" => true,
+                "message" => "Admin registered successfully!",
+                "redirect" => "Admin-dashboard.php"
+            ];
+        } else {
+            $response['message'] = "Registration failed. Please try again.";
+        }
+
+    } catch (Exception $e) {
+        $response['message'] = "Error: " . $e->getMessage();
     }
+
+} else {
+    $response['message'] = "Invalid request method.";
 }
 
-$conn->close();
 echo json_encode($response);
 ?>

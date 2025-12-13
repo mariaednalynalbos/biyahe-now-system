@@ -937,10 +937,10 @@ const driverModal = document.getElementById('driverRegisterModal');
 
 // Gagamitin na natin ang bagong handleRegistration function
 if (adminModal) {
-    handleRegistration('adminRegistrationForm', '/Biyahe/Php/register_admin_process.php', adminModal);
+    handleRegistration('adminRegistrationForm', '../Php/register_admin_process.php', adminModal);
 }
 if (driverModal) {
-    handleRegistration('driverRegistrationForm', '/Biyahe/Php/register_driver_process.php', driverModal);
+    handleRegistration('driverRegistrationForm', '../Php/register_driver_process.php', driverModal);
 }
 
         
