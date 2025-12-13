@@ -4,14 +4,14 @@ header('Content-Type: application/json');
 try {
     include "Php/db.php";
     
-    // Test connection
-    $stmt = $conn->query("SELECT 1 as test");
+    // Test users table exists
+    $stmt = $conn->query("SELECT COUNT(*) as count FROM users");
     $result = $stmt->fetch();
     
     echo json_encode([
         "status" => "success", 
-        "message" => "Database connected successfully",
-        "test_result" => $result
+        "message" => "Users table accessible",
+        "user_count" => $result['count']
     ]);
     
 } catch (Exception $e) {
