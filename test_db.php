@@ -1,6 +1,12 @@
 <?php
 header('Content-Type: application/json');
 
+echo "<h3>Testing database connection...</h3>";
+echo "Host: " . (getenv('DB_HOST') ?: 'localhost') . "<br>";
+echo "Database: " . (getenv('DB_NAME') ?: 'biyahe_now') . "<br>";
+echo "User: " . (getenv('DB_USER') ?: 'root') . "<br>";
+echo "Port: " . (getenv('DB_PORT') ?: '3306') . "<br>";
+
 try {
     include "Php/db.php";
     
@@ -8,16 +14,10 @@ try {
     $stmt = $conn->query("SELECT 1 as test");
     $result = $stmt->fetch();
     
-    echo json_encode([
-        "status" => "success", 
-        "message" => "Database connected successfully",
-        "test_result" => $result
-    ]);
+    echo "✅ Database connected successfully<br>";
+    echo "Test result: " . json_encode($result);
     
 } catch (Exception $e) {
-    echo json_encode([
-        "status" => "error", 
-        "message" => $e->getMessage()
-    ]);
+    echo "❌ Database connection failed: " . $e->getMessage();
 }
 ?>

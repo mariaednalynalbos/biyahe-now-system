@@ -1,12 +1,12 @@
 <?php
 // Database Configuration
-$host = $_ENV['DB_HOST'] ?? 'localhost';
-$db = $_ENV['DB_NAME'] ?? 'biyahe_now';
-$user = $_ENV['DB_USER'] ?? 'root';
-$pass = $_ENV['DB_PASS'] ?? '';
-$port = $_ENV['DB_PORT'] ?? '3306';
+$host = getenv('DB_HOST') ?: 'localhost';
+$db = getenv('DB_NAME') ?: 'biyahe_now';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') ?: '';
+$port = getenv('DB_PORT') ?: '3306';
 
-if (isset($_ENV['DB_HOST'])) {
+if (getenv('DB_HOST')) {
     $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 } else {
     $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
