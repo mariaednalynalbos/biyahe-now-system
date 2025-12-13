@@ -42,9 +42,9 @@ try {
     if ($user['user_type'] === 'driver') {
         $redirect = "dashboard.html";
     } elseif ($user['user_type'] === 'passenger') {
-        $redirect = "passenger-dashboard.html";
+        $redirect = "Php/Passenger-dashboard.php";
     } else {
-        $redirect = "admin-dashboard.html";
+        $redirect = "Php/Admin-dashboard.php";
     }
 
     $response = [

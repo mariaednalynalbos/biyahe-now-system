@@ -68,9 +68,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($role === 'driver') {
             $redirect = "dashboard.html";
         } elseif ($role === 'passenger') {
-            $redirect = "passenger-dashboard.html";
+            $redirect = "Php/Passenger-dashboard.php";
         } else {
-            $redirect = "admin-dashboard.html";
+            $redirect = "Php/Admin-dashboard.php";
         }
 
         echo json_encode([
