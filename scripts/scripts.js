@@ -306,7 +306,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   e.preventDefault();
 
   const formData = new FormData(this);
-  const response = await fetch('Php/login_working.php', 
+  const response = await fetch('Php/login_reliable.php', 
     { method: "POST", body: formData });
   const data = await response.json();
 
