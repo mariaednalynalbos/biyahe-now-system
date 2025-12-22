@@ -18,6 +18,11 @@ function supabaseQuery($table, $method = 'GET', $data = null, $filter = null) {
         throw new Exception("Supabase credentials not configured");
     }
     
+    // Ensure URL has proper format
+    if (!filter_var($supabase_url, FILTER_VALIDATE_URL)) {
+        throw new Exception("Invalid Supabase URL format: " . $supabase_url);
+    }
+    
     $url = $supabase_url . '/rest/v1/' . $table;
     if ($filter) $url .= '?' . $filter;
     
@@ -38,6 +43,11 @@ function supabaseQuery($table, $method = 'GET', $data = null, $filter = null) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Biyahe-System/1.0');
     
     if ($data && in_array($method, ['POST', 'PATCH'])) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -46,10 +56,11 @@ function supabaseQuery($table, $method = 'GET', $data = null, $filter = null) {
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
+    $curlInfo = curl_getinfo($ch);
     curl_close($ch);
     
     if ($curlError) {
-        throw new Exception("cURL Error: " . $curlError);
+        throw new Exception("cURL Error: " . $curlError . " (URL: " . $url . ")");
     }
     
     if ($httpCode >= 400) {
