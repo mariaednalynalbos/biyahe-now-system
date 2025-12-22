@@ -257,8 +257,8 @@ if (registerFormElement) {
         const formData = new FormData(this);
         
         try {
-            // Using working Supabase backend
-            const response = await fetch("Php/register_working.php", {
+            // Using unified file-based backend
+            const response = await fetch("Php/register_unified.php", {
                 method: "POST",
                 body: formData
             });
@@ -306,7 +306,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   e.preventDefault();
 
   const formData = new FormData(this);
-  const response = await fetch('Php/login_reliable.php', 
+  const response = await fetch('Php/login_unified.php', 
     { method: "POST", body: formData });
   const data = await response.json();
 
