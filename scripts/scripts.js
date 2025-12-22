@@ -274,7 +274,7 @@ if (registerFormElement) {
             // 🛑 CHECK #2: JSON Parsing Error
             const data = await response.json();
 
-            if (data.status === "success") {
+            if (data.success) {
                 console.log("Registration successful! Redirecting to:", data.redirect);
                 
                 showPopup("Registration successful! Welcome.", "success");
@@ -284,7 +284,6 @@ if (registerFormElement) {
                 }, 1500);
             
             } else {
-                // Error na galing sa PHP (validation, email registered, etc.)
                 showPopup(data.message, "error");
                 console.warn("Server validation failed:", data.message);
             }
@@ -310,20 +309,17 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     { method: "POST", body: formData });
   const data = await response.json();
 
-  if (data.status === "success") {
+  if (data.success) {
     // 1. I-display ang success message
-    showPopup(data.message, "success"); // FIX: Gawing "success" ang type
+    showPopup(data.message, "success");
 
     // 2. MAG-REDIRECT PAGKATAPOS ng maikling delay
     setTimeout(() => {
-        // Tiyaking tama ang redirect path mula sa PHP (hal. "../Passenger/passenger-dashboard.php")
         window.location.href = data.redirect; 
-    }, 500); // 0.5 segundo delay para makita ang popup
+    }, 500);
     
   } else {
-    // TAMA NA ITO: Alert ang error galing sa PHP
     showPopup(data.message, "error");
-    // alert("❌ " + data.message || "Login failed due to an unknown error!"); // Pwedeng tanggalin ang alert at gumamit lang ng popup
   }
 });
 });
