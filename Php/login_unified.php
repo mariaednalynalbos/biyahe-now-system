@@ -2,11 +2,16 @@
 session_start();
 header('Content-Type: application/json');
 
+// Debug logging
+error_log("Login attempt started");
+
 $response = ["success" => false, "message" => "Login failed"];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
+    
+    error_log("Login attempt for email: $email");
 
     if (empty($email) || empty($password)) {
         $response['message'] = "Email and password are required";
@@ -48,8 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ];
 
         if (isset($admin_accounts[$email])) {
+            error_log("Admin account found for: $email");
             $account = $admin_accounts[$email];
             if ($password === $account['password']) {
+                error_log("Password verified for admin: $email");
                 $_SESSION['user_id'] = 1;
                 $_SESSION['name'] = $account['name'];
                 $_SESSION['email'] = $email;
@@ -63,9 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     "role" => $account['role']
                 ];
             } else {
+                error_log("Password mismatch for admin: $email");
                 $response['message'] = "Invalid password";
             }
         } else {
+            error_log("Admin account not found for: $email");
             $response['message'] = "Account not found";
         }
     } else {
