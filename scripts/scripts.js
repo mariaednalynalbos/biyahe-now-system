@@ -310,13 +310,16 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   const data = await response.json();
 
   if (data.success) {
-    // 1. I-display ang success message
+    // Close the modal
+    hideAuthModal();
+    
+    // Show success message
     showPopup(data.message, "success");
 
-    // 2. MAG-REDIRECT PAGKATAPOS ng maikling delay
+    // Redirect immediately
     setTimeout(() => {
         window.location.href = data.redirect; 
-    }, 500);
+    }, 1000);
     
   } else {
     showPopup(data.message, "error");
