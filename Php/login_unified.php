@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $response = [
                     "success" => true,
-                    "message" => "Login successful! (Admin)",
+                    "message" => "Login successful!",
                     "redirect" => "Php/Admin-dashboard.php",
                     "role" => $account['role']
                 ];

@@ -100,7 +100,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] !== 'passenger') {
                     <div class="utility-card book-now-card" id="bookNowCard">
                         <h3>Book Now</h3>
                         
-                        <form id="bookingForm" action="process_passenger_booking.php" method="POST">
+                        <form id="bookingForm" action="process_passenger_booking_unified.php" method="POST">
                             <div class="form-grid" id="bookNowFormGrid">
                                 <div class="form-group"> 
                                     <label for="firstName">First Name</label>
