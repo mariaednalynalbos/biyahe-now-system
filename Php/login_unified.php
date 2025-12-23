@@ -27,12 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Read users from file
     $users = json_decode(file_get_contents($usersFile), true) ?: [];
+    
+    // Debug: Log users file content
+    error_log("Users file content: " . json_encode($users));
+    error_log("Looking for email: $email");
 
     // Find user
     $user = null;
     foreach ($users as $u) {
+        error_log("Checking user: " . json_encode($u));
         if ($u['email'] === $email) {
             $user = $u;
+            error_log("User found: " . json_encode($user));
             break;
         }
     }
