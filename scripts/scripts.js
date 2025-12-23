@@ -258,7 +258,7 @@ if (registerFormElement) {
         
         try {
             // Using unified file-based backend
-            const response = await fetch("Php/register_database.php", {
+            const response = await fetch("Php/register_hybrid.php", {
                 method: "POST",
                 body: formData
             });
@@ -305,7 +305,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   e.preventDefault();
 
   const formData = new FormData(this);
-  const response = await fetch('Php/login_database.php', 
+  const response = await fetch('Php/login_hybrid.php', 
     { method: "POST", body: formData });
   const data = await response.json();
 
