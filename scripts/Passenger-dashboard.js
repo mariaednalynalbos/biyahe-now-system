@@ -472,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            const response = await fetch('../Php/process_passenger_booking.php', {
+            const response = await fetch('../Php/process_passenger_booking_unified.php', {
                 method: 'POST',
                 body: formData
             });

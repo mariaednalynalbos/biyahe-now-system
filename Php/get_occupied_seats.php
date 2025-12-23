@@ -1,47 +1,32 @@
 <?php
-session_start();
 header('Content-Type: application/json');
-require_once 'db.php';
 
-$route_id = $_GET['route_id'] ?? '';
-$departure_time = $_GET['departure_time'] ?? '';
-$booking_date = $_GET['booking_date'] ?? date('Y-m-d');
+$routeId = $_GET['route_id'] ?? '';
+$departureTime = $_GET['departure_time'] ?? '';
 
-if (empty($route_id) || empty($departure_time)) {
-    echo json_encode(['success' => false, 'message' => 'Missing parameters']);
+$response = ["success" => true, "occupied_seats" => []];
+
+if (empty($routeId) || empty($departureTime)) {
+    echo json_encode($response);
     exit;
 }
 
-try {
-    $sql = "
-        SELECT DISTINCT seat_number 
-        FROM bookings 
-        WHERE route_id = :route_id 
-        AND departure_time = :departure_time 
-        AND booking_date = :booking_date 
-        AND status = 'Confirmed'
-    ";
-    
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':route_id', $route_id);
-    $stmt->bindParam(':departure_time', $departure_time);
-    $stmt->bindParam(':booking_date', $booking_date);
-    $stmt->execute();
-    
-    $occupied_seats = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
-    echo json_encode([
-        'success' => true, 
-        'occupied_seats' => $occupied_seats,
-        'debug' => [
-            'route_id' => $route_id,
-            'departure_time' => $departure_time,
-            'booking_date' => $booking_date,
-            'count' => count($occupied_seats)
-        ]
-    ]);
-    
-} catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+$bookingsFile = __DIR__ . '/bookings.json';
+if (!file_exists($bookingsFile)) {
+    echo json_encode($response);
+    exit;
 }
+
+$bookings = json_decode(file_get_contents($bookingsFile), true) ?: [];
+
+// Find occupied seats for this route and time
+$occupiedSeats = [];
+foreach ($bookings as $booking) {
+    if ($booking['route'] == $routeId && $booking['trip_time'] == $departureTime && $booking['status'] !== 'Cancelled') {
+        $occupiedSeats[] = $booking['seat_number'];
+    }
+}
+
+$response['occupied_seats'] = $occupiedSeats;
+echo json_encode($response);
 ?>

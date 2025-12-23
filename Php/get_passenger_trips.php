@@ -1,78 +1,59 @@
 <?php
-error_reporting(E_ALL);
 session_start();
 header('Content-Type: application/json');
-require_once 'db.php';
 
-// Check session
-if (!isset($_SESSION['passenger_id']) && !isset($_SESSION['account_id'])) {
-    echo json_encode(['success' => false, 'message' => "Not logged in", 'session_debug' => $_SESSION]);
+$response = ["success" => false, "message" => "Failed to load trips"];
+
+if (!isset($_SESSION['user_id'])) {
+    $response['message'] = "Not logged in";
+    echo json_encode($response);
     exit;
 }
 
-$passenger_id = $_SESSION['passenger_id'] ?? $_SESSION['account_id'];
 $type = $_GET['type'] ?? 'upcoming';
+$bookingsFile = __DIR__ . '/bookings.json';
 
-try {
-    if ($type === 'upcoming') {
-        $sql = "
-            SELECT 
-                b.*, r.origin, r.destination, r.route_name
-            FROM 
-                bookings b
-            LEFT JOIN 
-                routes r ON b.route_id = r.route_id
-            WHERE 
-                b.passenger_id = :id
-                AND (b.status IN ('Pending', 'Confirmed') OR b.status = '' OR b.status IS NULL)
-            ORDER BY 
-                b.booking_date ASC, b.departure_time ASC
-            LIMIT 10
-        ";
-    } else {
-        $sql = "
-            SELECT 
-                b.*, r.origin, r.destination, r.route_name
-            FROM 
-                bookings b
-            LEFT JOIN 
-                routes r ON b.route_id = r.route_id
-            WHERE 
-                b.passenger_id = :id 
-                AND (
-                    b.status IN ('Completed', 'Cancelled') 
-                    OR (b.booking_date < CURDATE() OR (b.booking_date = CURDATE() AND b.departure_time < CURTIME()))
-                )
-            ORDER BY 
-                b.booking_date DESC, b.departure_time DESC
-        ";
-    }
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $passenger_id);
-    $stmt->execute();
-    $trips = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Get all bookings for debug
-    $debugSql = "SELECT * FROM bookings WHERE passenger_id = :id ORDER BY booking_date DESC";
-    $debugStmt = $pdo->prepare($debugSql);
-    $debugStmt->bindParam(':id', $passenger_id);
-    $debugStmt->execute();
-    $allBookings = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    echo json_encode([
-        'success' => true, 
-        'trips' => $trips, 
-        'debug' => [
-            'passenger_id' => $passenger_id, 
-            'type' => $type, 
-            'count' => count($trips),
-            'all_bookings' => $allBookings
-        ]
-    ]);
-
-} catch (PDOException $e) {
-    error_log("Fetch Trips PDO Error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => "Database error: " . $e->getMessage()]);
+if (!file_exists($bookingsFile)) {
+    $response = ["success" => true, "trips" => []];
+    echo json_encode($response);
+    exit;
 }
+
+$bookings = json_decode(file_get_contents($bookingsFile), true) ?: [];
+
+// Filter bookings for current user
+$userBookings = array_filter($bookings, function($booking) {
+    return $booking['user_id'] == $_SESSION['user_id'];
+});
+
+// Add route names and destinations
+$routes = [
+    '1' => ['name' => 'Naval to Tacloban', 'destination' => 'Tacloban'],
+    '2' => ['name' => 'Naval to Ormoc', 'destination' => 'Ormoc'],
+    '3' => ['name' => 'Naval to Lemon', 'destination' => 'Lemon']
+];
+
+$trips = [];
+foreach ($userBookings as $booking) {
+    $routeInfo = $routes[$booking['route']] ?? ['name' => 'Unknown Route', 'destination' => 'Unknown'];
+    
+    $trips[] = [
+        'booking_id' => $booking['id'],
+        'passenger_name' => $booking['passenger_name'],
+        'route_name' => $routeInfo['name'],
+        'destination' => $routeInfo['destination'],
+        'booking_date' => $booking['booking_date'],
+        'departure_time' => $booking['trip_time'],
+        'seat_number' => $booking['seat_number'],
+        'status' => $booking['status'],
+        'route_id' => $booking['route']
+    ];
+}
+
+$response = [
+    "success" => true,
+    "trips" => $trips
+];
+
+echo json_encode($response);
 ?>
