@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $phoneNumber = trim($_POST['phoneNumber'] ?? $_POST['phone_number'] ?? '');
 
     // Validation
-    if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($licenseNumber)) {
+    if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
         $response['message'] = "All required fields must be filled";
         echo json_encode($response);
         exit;
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Try database first
+    // Try hybrid system (database first, then file fallback)
     try {
         require_once 'db_persistent.php';
         
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($stmt->execute([$firstName, $lastName, $fullName, $email, $hashedPassword])) {
                 $response = [
                     "success" => true,
-                    "message" => "Driver registered successfully! (Database)",
+                    "message" => "Driver registered successfully!",
                     "driver" => [
                         "name" => $fullName,
                         "email" => $email,
@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT))) {
         $response = [
             "success" => true,
-            "message" => "Driver registered successfully! (File)",
+            "message" => "Driver registered successfully!",
             "driver" => [
                 "name" => $newDriver['name'],
                 "email" => $newDriver['email'],
