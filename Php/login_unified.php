@@ -55,32 +55,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 'password' => 'admin123',
                 'name' => 'System Admin',
                 'role' => 'admin'
+            ],
+            'passenger@test.com' => [
+                'password' => 'passenger123',
+                'name' => 'Test Passenger',
+                'role' => 'passenger'
             ]
         ];
 
         if (isset($admin_accounts[$email])) {
-            error_log("Admin account found for: $email");
+            error_log("Hardcoded account found for: $email");
             $account = $admin_accounts[$email];
             if ($password === $account['password']) {
-                error_log("Password verified for admin: $email");
-                $_SESSION['user_id'] = 1;
+                error_log("Password verified for: $email");
+                $_SESSION['user_id'] = ($account['role'] === 'admin') ? 1 : 2;
                 $_SESSION['name'] = $account['name'];
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $account['role'];
                 $_SESSION['logged_in'] = true;
 
+                $redirect = ($account['role'] === 'admin') ? 'Php/Admin-dashboard.php' : 'Php/Passenger-dashboard.php';
+                
                 $response = [
                     "success" => true,
                     "message" => "Login successful!",
-                    "redirect" => "Php/Admin-dashboard.php",
+                    "redirect" => $redirect,
                     "role" => $account['role']
                 ];
             } else {
-                error_log("Password mismatch for admin: $email");
+                error_log("Password mismatch for: $email");
                 $response['message'] = "Invalid password";
             }
         } else {
-            error_log("Admin account not found for: $email");
+            error_log("Account not found for: $email");
             $response['message'] = "Account not found";
         }
     } else {
