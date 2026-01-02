@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $response = [
                     "success" => true,
-                    "message" => "Login successful! (Database)",
+                    "message" => "Login successful!",
                     "redirect" => $redirect,
                     "role" => $user['user_type']
                 ];
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $response = [
                     "success" => true,
-                    "message" => "Login successful! (File)",
+                    "message" => "Login successful!",
                     "redirect" => $redirect,
                     "role" => $user['user_type']
                 ];

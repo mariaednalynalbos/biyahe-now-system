@@ -106,12 +106,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $redirect = 'dashboard.html';
             }
 
-            $response = [
-                "success" => true,
-                "message" => "Login successful!",
-                "redirect" => $redirect,
-                "role" => $user['user_type']
-            ];
+                $response = [
+                    "success" => true,
+                    "message" => "Login successful!",
+                    "redirect" => $redirect,
+                    "role" => $user['user_type']
+                ];
         } else {
             $response['message'] = "Invalid password";
         }

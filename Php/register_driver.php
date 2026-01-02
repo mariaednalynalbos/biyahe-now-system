@@ -19,9 +19,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $licenseNumber = trim($_POST['licenseNumber'] ?? $_POST['license_number'] ?? '');
     $phoneNumber = trim($_POST['phoneNumber'] ?? $_POST['phone_number'] ?? '');
 
+    $confirmPassword = $_POST['confirmPassword'] ?? '';
+    $address = trim($_POST['address'] ?? '');
+    $contactNumber = trim($_POST['contactNumber'] ?? '');
+    $plateNumber = trim($_POST['plateNumber'] ?? '');
+    $vehicleType = trim($_POST['vehicleType'] ?? '');
+
     // Validation
     if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
-        $response['message'] = "All required fields must be filled";
+        $response['message'] = "First name, last name, email, and password are required";
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($password !== $confirmPassword) {
+        $response['message'] = "Passwords do not match";
         echo json_encode($response);
         exit;
     }
