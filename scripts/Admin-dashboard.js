@@ -940,7 +940,7 @@ if (adminModal) {
     handleRegistration('adminRegistrationForm', '../Php/register_admin_process.php', adminModal);
 }
 if (driverModal) {
-    handleRegistration('driverRegistrationForm', 'register_driver.php', driverModal);
+    handleRegistration('driverRegistrationForm', 'register_driver_simple.php', driverModal);
 }
 
         
